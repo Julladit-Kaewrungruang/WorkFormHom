@@ -13,9 +13,21 @@
             </div>
         </div>
     </div> -->
+    <div class="row">
+        <div class="col-10"></div>
+        <div class="col-2">
+            <div class=" customInputFilterDate ml-2">
+                <div class="input-group mb-2    ">
+                    <input type="text" id="inputSearch" placeholder="Search..." class="form-control" id="" aria-label="Username" aria-describedby="basic-addon1">
+                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card shadow mb-4 ">
 
         <div class="card-body ">
+            <label class="ms-4 fw-bold card-title fs-3">Request</label>
             <div class="table-responsive">
                 <table class="table  text-black text-center overflow-auto" id="dataTable" width="100%" cellspacing="0">
                     <thead>

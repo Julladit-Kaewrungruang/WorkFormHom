@@ -34,7 +34,7 @@ function getformrequest($type, $dataAPI, $dataoption)
     $empId = $_SESSION['emp_id'];
     if ($type == 'request') {
         $datareturn = $dataAPI;
-        $token = 'RE' . date('ymd', time()) . new_token(4);
+        $token = 'RE' . date('ymd', time()) . new_token_uppercaseV2(4);
         insertSQL('wfh_request', '[requestor_id]
         ,[request_to]
         ,request_remark
@@ -245,12 +245,12 @@ function GetEmployeeRequest($type, $dataAPI, $dataoption)
     $empId = $_SESSION['emp_id'];
     // $data = array();0
     if ($type == 'employeeRequest') {
-        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_requestDate  
-        left join wfh_request on date_requestid=request_id
-        left join user_emp_view on emp_id=request_to
-        where date_status!=9
-        ", array());
+        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9", array());
         foreach ($dataEmp as $form) {
+
+            $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
+
+            $form['date'] = $datadate;
             array_push($datareturn['employeeRequest1'], $form);
         }
     }
@@ -280,18 +280,35 @@ function GetBtnApp_Rej($type, $dataAPI, $dataoption)
 function GetDetailRequest($type, $dataAPI, $dataoption)
 {
     global $dateNow, $browser, $keyAPI;
-    $datareturn = array('detailRequest' => []);
+    $datareturn = array();
     $codeReturn = 0;
     $empId = $_SESSION['emp_id'];
     // $data = array();0
     if ($type == 'detailReq') {
-        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_requestDate  
-        left join wfh_request on date_requestid=request_id
-        left join user_emp_view on emp_id=request_to
-        where date_status!=9
-        ", array());
+        // $dataEmp = getDataSQLv1(1, "SELECT * from wfh_requestDate  
+        // left join wfh_request on date_requestid=request_id
+        // left join user_emp_view on emp_id=request_to
+        // where date_status!=9
+        // ", array());
+        // foreach ($dataEmp as $form) {
+        //     array_push($datareturn['detailRequest'], $form);
+        // }
+        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND request_token=?", array($dataAPI['token']));
         foreach ($dataEmp as $form) {
-            array_push($datareturn['detailRequest'], $form);
+
+            $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
+
+            $form['date'] = $datadate;
+            array_push($datareturn, $form);
+        }
+    } else if ($type == 'HeadDetail') {
+        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND request_token=?", array($dataAPI['token']));
+        foreach ($dataEmp as $form) {
+
+            $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
+
+            $form['date'] = $datadate;
+            array_push($datareturn, $form);
         }
     }
     return setDataReturn($codeReturn, $datareturn);

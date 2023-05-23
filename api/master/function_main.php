@@ -45,6 +45,16 @@ function new_token_uppercase($len){
     }
     return $ret_char;
   }
+  function new_token_uppercaseV2($len){
+    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $ret_char = "";
+    $num = strlen($chars);
+    for($i = 0; $i < $len; $i++) {
+        $ret_char.= $chars[rand()%$num];
+        $ret_char.="";
+    }
+    return $ret_char;
+  }
 function new_otp($len){
   $chars = "123456789";
   $ret_char = "";

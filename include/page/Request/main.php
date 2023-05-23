@@ -24,7 +24,7 @@
                         <textarea name="" id="remark-input" class="form-control" cols="30" rows="3"></textarea>
                     </div>
                     <div class="">
-                        <button class="button-85" id="submit-button"><span>Submit</span></button>
+                        <button class="button-29" id="submit-button"><span>Submit</span></button>
                     </div>
                 </div>
 

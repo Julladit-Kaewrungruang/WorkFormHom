@@ -11,7 +11,6 @@
                 <div class="input-group mb-2">
                     <input type="text" id="inputSearch" placeholder="Search..." class="form-control" id="" aria-label="Username" aria-describedby="basic-addon1">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                
                 </div>
             </div>
         </div>

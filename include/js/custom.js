@@ -101,12 +101,14 @@ function getdataEmpRequest() {
       let body = byId('tbody-emprequest')
       body.innerHTML = '';
       output.data.employeeRequest1.forEach(request => {
+        let date1 = request.date;
         // let date = convertDate(moment(request.date_select)/1000);
         body.innerHTML += `<tr class="align-items-center">
           <td>${request.request_token}</td>
           <td>${request.emp_fname} ${request.emp_lname}</td>
-          <td>${moment(request.date_select).format('DD/MM/YYYY')}</td>
-          <td > <button  class="btn btn-success button-85" style="border-radius: 15px;" id="approve-btn" onclick=" GetApproveBtn()">Detail</button>
+          <td>${date1.length} Day</td>
+          <td > <button  class="button-29">
+          <a href='EmployeeRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
            </td>
         </tr>`
       })
@@ -114,8 +116,9 @@ function getdataEmpRequest() {
   })
 }
 
-function getdataDetailReq() {
+function getdataDetailReq(token) {
   let dataAPI = {
+    token: token
   }
   console.log(dataAPI)
   connectApi('get/DetailRequest', { type: 'detailReq', data: dataAPI, dataoption: 0 }, ``, function (output) {
@@ -123,19 +126,120 @@ function getdataDetailReq() {
     if (output.status == 200) {
       let body = byId('tbody-Detail')
       body.innerHTML = '';
-      output.data.detailRequest.forEach(request => {
-        // let date = convertDate(moment(request.date_select)/1000);
-        body.innerHTML += ` <tr class="text-center">
-        <td><input type="checkbox" name="foo" value="bar1"> </td>
-        <td>${moment(request.date_select).format('DD/MM/YYYY')}</td>
-          <td> <button type="submit" class="btn btn-success" style="border-radius: 15px;" id="approve-btn">Approve</button>
-          <button type="submit" class="btn btn-danger" style="border-radius: 15px;" id="reject-btn">Reject</button>
-          </td>
-        </tr>`
+      output.data.forEach(request => {
+        let date1 = request.date
+        date1.forEach(date => {
+          body.innerHTML += ` <tr class="text-center">
+          <td><input type="checkbox" name="foo" value="bar1"> </td>
+          <td>${moment(date.date_select).format('DD/MM/YYYY')}</td>
+            <td> <button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" onclick="GetApproveBtn()">Approve</button>
+            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" onclick="GetRejectBtn()">Reject</button>
+            </td>
+          </tr>`
+        })
       })
     }
   })
 }
+
+// function getdataHeadDetailReq() {
+//   let dataAPI = {
+//   }
+//   console.log(dataAPI)
+//   connectApi('get/DetailRequest', { type: 'detailReq', data: dataAPI, dataoption: 0 }, ``, function (output) {
+//     console.log(output)
+//     if (output.status == 200) {
+//       let body = byId('HeadDetail')
+//       body.innerHTML = '';
+//       output.data.forEach(request => {
+//         let date1 = request.date
+//         date1.forEach(date => {
+//           body.innerHTML += ` <div class="col my-2">
+//             <img src="">
+//             <div style="display: inline-block;">
+//                 <div class="ms-3">
+//                     <p>Name : ${request.emp_fname}</p>
+//                     <p>Email : ${request.emp_lname} </p>
+//                     <p>Position :${request.emp_positionName}</p>
+//                 </div>
+//             </div>
+//         </div>
+//         <div class="col">
+//             <p>ID : ${request.request_token}</p>
+//             <div class="row">
+//                 <p>เมื่อ : ${request.request_create_at}</p>
+//             </div>
+//         </div>
+//         <div class="col">
+//             <p>${date1.length} Day</p>
+//         </div>`
+//         })
+//       })
+//     }
+//   })
+// }
+
+function getdataHeadDetailReq(token) {
+  let dataAPI = {
+    token: token
+  }
+  console.log(dataAPI)
+  connectApi('get/DetailRequest', { type: 'HeadDetail', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let body = byId('Head-Detail')
+      body.innerHTML = '';
+      output.data.forEach(request => {
+        let date1 = request.date
+        date1.forEach(date => {
+          body.innerHTML += `<div class="col my-2">
+          <img src=${request.emp_profile}>
+          <div style="display: inline-block;">
+              <div class="ms-3">
+                  <p>Name : ${request.emp_fname}</p>
+                  <p>Email : ${request.emp_lname} </p>
+                  <p>Position : ${request.emp_positionName}</p>
+              </div>
+          </div>
+      </div>
+      <div class="col">
+          <p>ID : ${request.request_token}</p>
+          <div class="row">
+              <p>เมื่อ : ${request.request_create_at}</p>
+          </div>
+      </div>
+      <div class="col">
+          <p>${date1.length} Day</p>
+      </div>`
+        })
+      })
+    }
+  })
+}
+// function getdataEmpRequest() {
+//   let dataAPI = {
+//   }
+//   console.log(dataAPI)
+//   connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
+//     console.log(output)
+//     if (output.status == 200) {
+//       let body = byId('tbody-emprequest')
+//       body.innerHTML = '';
+//       output.data.employeeRequest1.forEach(request => {
+//         let date1 = request.date;
+//         // let date = convertDate(moment(request.date_select)/1000);
+//         body.innerHTML += `<tr class="align-items-center">
+//           <td>${request.request_token}</td>
+//           <td>${request.emp_fname} ${request.emp_lname}</td>
+//           <td>${date1.length} Day</td>
+//           <td > <button  class="button-29">
+//           <a href='EmployeeRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
+//            </td>
+//         </tr>`
+//       })
+//     }
+//   })
+// }
 
 
 
