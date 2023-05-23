@@ -296,7 +296,10 @@ function GetDetailRequest($type, $dataAPI, $dataoption)
         $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND request_token=?", array($dataAPI['token']));
         foreach ($dataEmp as $form) {
 
-            $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
+            $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate 
+              left join wfh_request on date_requestid=request_id
+             left join user_emp_view on emp_id=request_to
+            where date_status!=9 AND date_requestid=?", array($form['request_id']));
 
             $form['date'] = $datadate;
             array_push($datareturn, $form);
@@ -310,6 +313,15 @@ function GetDetailRequest($type, $dataAPI, $dataoption)
             $form['date'] = $datadate;
             array_push($datareturn, $form);
         }
+    }else if ($type == 'ApproveAll') {
+
+        foreach($dataAPI['check'] as $date){
+             updateSQL('wfh_requestDate', 'date_status=?', 'date_id=?', array($dataAPI['type'], $date));
+        }
+
+       
+
+        array_push($datareturn, $dataAPI);
     }
     return setDataReturn($codeReturn, $datareturn);
 }

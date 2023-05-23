@@ -126,20 +126,103 @@ function getdataDetailReq(token) {
     if (output.status == 200) {
       let body = byId('tbody-Detail')
       body.innerHTML = '';
+
+      let bodyH = byId('Head-Detail')
+      bodyH.innerHTML = '';
+
       output.data.forEach(request => {
-        let date1 = request.date
+        let date1 = request.date;
+        bodyH.innerHTML = `<div class="col my-2" >
+        <img src=${request.emp_profile} style="width: 20%; height: auto; border-radius: 10px;" class="mb-5 ms-3">
+        <div style="display: inline-block;">
+            <div class="ms-3">
+                <p>Name : ${request.emp_fname} ${request.emp_lname}</p>
+                <p>Email : ${request.emp_email} </p>
+                <p>Position : ${request.emp_positionName}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <p>ID : ${request.request_token}</p>
+        <div class="row">
+            <p>เมื่อ : ${moment(request.request_create_at).format('DD/MM/YYYY, h:mm:ss a')}</p>
+        </div>
+    </div>
+    <div class="col">
+        <p>${date1.length} Day</p>
+    </div>`
         date1.forEach(date => {
           body.innerHTML += ` <tr class="text-center">
-          <td><input type="checkbox" name="foo" value="bar1"> </td>
+          <td><input type="checkbox" name="foo" value="${date.date_id}" class="checkDateDetail" onClick="checkAll()"> </td>
           <td>${moment(date.date_select).format('DD/MM/YYYY')}</td>
-            <td> <button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" onclick="GetApproveBtn()">Approve</button>
-            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" onclick="GetRejectBtn()">Reject</button>
+            <td> 
+            ${date.date_status==1?`<button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,2,this)">Approve</button>
+            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>`:``}
+            
             </td>
           </tr>`
         })
+        Cale(date1);
       })
     }
   })
+}
+
+function checkAll() {
+  let checkDateDetail = FindAll(`.checkDateDetail:checked`);
+  console.log(checkDateDetail);
+  var ShowBtn = document.getElementById("showBtnAll");
+  if (checkDateDetail.length > 1) { // เปลี่ยนจาก celem เป็น elem
+    ShowBtn.style.display = "block";
+  } else {
+    ShowBtn.style.display = "none";
+  }
+}
+
+function ClickAll(elem) {
+  if (elem.checked) {
+    let checkboxes = document.getElementsByName("foo");
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = true;
+    }
+  } else {
+    let checkboxes = document.getElementsByName("foo");
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = false;
+    }
+  }
+  checkAll()
+}
+
+
+function Cale(date1) {
+  let EventAll = [];
+  // document.addEventListener('DOMContentLoaded', function() {
+  date1.forEach(date => {
+    EventAll.push({
+      title: date.emp_fname,
+      start: date.date_select,
+      color: '#a6a6a6'
+    })
+  })
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    defaultView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,listMonth'
+    },
+    events: EventAll,
+    // eventColor: '#378006',
+    eventRender: function (info) {
+      var dotEl = document.createElement('div');
+      dotEl.className = 'event-dot';
+
+      info.el.querySelector('.fc-event-title').appendChild(dotEl);
+    }
+  });
+  calendar.render();
 }
 
 // function getdataHeadDetailReq() {
@@ -189,15 +272,16 @@ function getdataHeadDetailReq(token) {
     if (output.status == 200) {
       let body = byId('Head-Detail')
       body.innerHTML = '';
+      let count = 0; // ตัวแปร count เพื่อตรวจสอบจำนวนรอบที่วน
       output.data.forEach(request => {
         let date1 = request.date
         date1.forEach(date => {
-          body.innerHTML += `<div class="col my-2">
-          <img src=${request.emp_profile}>
+          body.innerHTML = `<div class="col my-2" >
+          <img src=${request.emp_profile} style="width: 20%; height: auto; border-radius: 10px;" class="mb-5 ms-3">
           <div style="display: inline-block;">
               <div class="ms-3">
-                  <p>Name : ${request.emp_fname}</p>
-                  <p>Email : ${request.emp_lname} </p>
+                  <p>Name : ${request.emp_fname} ${request.emp_lname}</p>
+                  <p>Email : ${request.emp_email} </p>
                   <p>Position : ${request.emp_positionName}</p>
               </div>
           </div>
@@ -205,12 +289,13 @@ function getdataHeadDetailReq(token) {
       <div class="col">
           <p>ID : ${request.request_token}</p>
           <div class="row">
-              <p>เมื่อ : ${request.request_create_at}</p>
+              <p>เมื่อ : ${moment(request.request_create_at).format('DD/MM/YYYY, h:mm:ss a')}</p>
           </div>
       </div>
       <div class="col">
           <p>${date1.length} Day</p>
       </div>`
+
         })
       })
     }
@@ -495,14 +580,45 @@ function getdataHistoryRequest() {
   })
 }
 
-function GetApproveBtn() {
+function GetApproveBtn(SingleType, type, e) {
+  // console.log(e.dataset.id);
   Swal.fire({
     icon: "warning",
-    title: "ยืนยัน....",
+    title: type == 2 ? `Approve?` : `Reject?`,
     showCancelButton: true,
     confirmButtonText: 'ตกลง',
     cancelButtonText: 'ยกเลิก'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let check = [];
+      if (SingleType == 0) {
+        let checkDateDetail = FindAll(`.checkDateDetail:checked`);
+        checkDateDetail.forEach(date => {
+          check.push(parseInt(date.value))
+        })
+      } else {
+        check.push(parseInt(e.dataset.id))
+        // check.push(parseInt(date.value))
+      }
+      console.log(check);
+      let dataAPI = {
+        type: type,
+        check: check,
+      }
+      connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, ``, function (output) {
+        console.log(output)
+        if (output.status == 200) {
+          location.reload()
+        }
+      })
+
+
+    }
+
   })
+
+
+
 }
 
 function GetRejectBtn() {

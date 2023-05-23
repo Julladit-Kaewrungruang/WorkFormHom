@@ -8,7 +8,7 @@
             <i class="bi bi-house-door"></i>
             <span>Home</span></a>
     </li>
-    <!-- <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>addwork">
+    <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>addwork">
         <a class="nav-link" href="<?= BASEPATH ?>addwork">
             <i class="bi bi-clipboard-plus-fill"></i>
             <span>Add Work</span></a>
@@ -17,7 +17,7 @@
         <a class="nav-link" href="<?= BASEPATH ?>Calendar">
             <i class="bi bi-calendar"></i>
             <span>Calendar</span></a>
-    </li> -->
+    </li> 
 
     <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>RequestWFH">
         <a class="nav-link" href="<?= BASEPATH ?>RequestWFH">
