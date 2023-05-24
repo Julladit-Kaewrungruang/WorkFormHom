@@ -25,14 +25,16 @@
         </div>
     </div>
     <div class="card shadow mb-4 ">
-
+        <div class="card-header py-3 headerXX bg-body-secondary">
+            <h6 class="m-0 font-weight-bold text-black ">Request</h6>
+        </div>
         <div class="card-body ">
-            <label class="ms-4 fw-bold card-title fs-3">Request</label>
+
             <div class="table-responsive">
                 <table class="table  text-black text-center overflow-auto" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>คำขอ-No.</th>
+                            <th>No.Token</th>
                             <th>Name Request</th>
                             <th>Request</th>
                             <th>Approved in month</th>

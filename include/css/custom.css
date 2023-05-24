@@ -388,6 +388,8 @@ button {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: rgb(17, 252, 181); /* สีที่ต้องการสำหรับจุดเหตุการณ์ */
+    background-color: rgb(17, 252, 181);
+    /* สีที่ต้องการสำหรับจุดเหตุการณ์ */
     display: inline-block;
-  }
+}
+

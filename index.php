@@ -168,7 +168,7 @@ define('BASEPATH', '/');
                     include('include/page/HistoryRequest/main.php');
                     // include('include/page/home/main.php');
                 });
-                Route::add('/EmployeeRequestqqqqqqqq', function () {
+                Route::add('/EmployeeRequest', function () {
                     include('include/page/EmployeeRequest/main.php');
                     // include('include/page/home/main.php');
                 });

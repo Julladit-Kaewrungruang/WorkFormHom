@@ -8,7 +8,7 @@
             <i class="bi bi-house-door"></i>
             <span>Home</span></a>
     </li>
-    <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>addwork">
+    <!-- <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>addwork">
         <a class="nav-link" href="<?= BASEPATH ?>addwork">
             <i class="bi bi-clipboard-plus-fill"></i>
             <span>Add Work</span></a>
@@ -17,7 +17,7 @@
         <a class="nav-link" href="<?= BASEPATH ?>Calendar">
             <i class="bi bi-calendar"></i>
             <span>Calendar</span></a>
-    </li> 
+    </li>  -->
 
     <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>RequestWFH">
         <a class="nav-link" href="<?= BASEPATH ?>RequestWFH">
@@ -29,15 +29,15 @@
             <i class="bi bi-envelope-paper"></i>
             <span>History Request</span></a>
     </li>
-    <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>EmployeeRequestqqqqqqqq">
-        <a class="nav-link" href="<?= BASEPATH ?>EmployeeRequestqqqqqqqq">
+    <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>EmployeeRequest">
+        <a class="nav-link" href="<?= BASEPATH ?>EmployeeRequest">
             <i class="bi bi-chat-right"></i>
             <span>Employee Request</span></a>
     </li>
-    <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>EmployeeRequest">
+    <!-- <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>EmployeeRequest">
         <a class="nav-link" href="<?= BASEPATH ?>EmployeeRequest2">
             <i class="bi bi-chat-right"></i>
-            <span>Employee Request Calendar</i></span></a>
+            <span>Employee Request Calendar</i></span></a> -->
     </li>
     <!-- <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>Myteam">
         <a class="nav-link" href="<?= BASEPATH ?>Myteam">

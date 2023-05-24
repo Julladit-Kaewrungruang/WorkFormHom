@@ -156,8 +156,8 @@ function getdataDetailReq(token) {
           <td><input type="checkbox" name="foo" value="${date.date_id}" class="checkDateDetail" onClick="checkAll()"> </td>
           <td>${moment(date.date_select).format('DD/MM/YYYY')}</td>
             <td> 
-            ${date.date_status==1?`<button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,2,this)">Approve</button>
-            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>`:``}
+            ${date.date_status == 1 ? `<button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,2,this)">Approve</button>
+            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>` : ``}
             
             </td>
           </tr>`
@@ -202,7 +202,8 @@ function Cale(date1) {
     EventAll.push({
       title: date.emp_fname,
       start: date.date_select,
-      color: '#a6a6a6'
+      // color: '#a6a6a6'
+      color: '#f97316'
     })
   })
   var calendarEl = document.getElementById('calendar');
@@ -225,43 +226,6 @@ function Cale(date1) {
   calendar.render();
 }
 
-// function getdataHeadDetailReq() {
-//   let dataAPI = {
-//   }
-//   console.log(dataAPI)
-//   connectApi('get/DetailRequest', { type: 'detailReq', data: dataAPI, dataoption: 0 }, ``, function (output) {
-//     console.log(output)
-//     if (output.status == 200) {
-//       let body = byId('HeadDetail')
-//       body.innerHTML = '';
-//       output.data.forEach(request => {
-//         let date1 = request.date
-//         date1.forEach(date => {
-//           body.innerHTML += ` <div class="col my-2">
-//             <img src="">
-//             <div style="display: inline-block;">
-//                 <div class="ms-3">
-//                     <p>Name : ${request.emp_fname}</p>
-//                     <p>Email : ${request.emp_lname} </p>
-//                     <p>Position :${request.emp_positionName}</p>
-//                 </div>
-//             </div>
-//         </div>
-//         <div class="col">
-//             <p>ID : ${request.request_token}</p>
-//             <div class="row">
-//                 <p>เมื่อ : ${request.request_create_at}</p>
-//             </div>
-//         </div>
-//         <div class="col">
-//             <p>${date1.length} Day</p>
-//         </div>`
-//         })
-//       })
-//     }
-//   })
-// }
-
 function getdataHeadDetailReq(token) {
   let dataAPI = {
     token: token
@@ -272,7 +236,6 @@ function getdataHeadDetailReq(token) {
     if (output.status == 200) {
       let body = byId('Head-Detail')
       body.innerHTML = '';
-      let count = 0; // ตัวแปร count เพื่อตรวจสอบจำนวนรอบที่วน
       output.data.forEach(request => {
         let date1 = request.date
         date1.forEach(date => {
@@ -301,33 +264,6 @@ function getdataHeadDetailReq(token) {
     }
   })
 }
-// function getdataEmpRequest() {
-//   let dataAPI = {
-//   }
-//   console.log(dataAPI)
-//   connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
-//     console.log(output)
-//     if (output.status == 200) {
-//       let body = byId('tbody-emprequest')
-//       body.innerHTML = '';
-//       output.data.employeeRequest1.forEach(request => {
-//         let date1 = request.date;
-//         // let date = convertDate(moment(request.date_select)/1000);
-//         body.innerHTML += `<tr class="align-items-center">
-//           <td>${request.request_token}</td>
-//           <td>${request.emp_fname} ${request.emp_lname}</td>
-//           <td>${date1.length} Day</td>
-//           <td > <button  class="button-29">
-//           <a href='EmployeeRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
-//            </td>
-//         </tr>`
-//       })
-//     }
-//   })
-// }
-
-
-
 
 function getdataMyTeam() {
   let dataAPI = {
@@ -581,7 +517,6 @@ function getdataHistoryRequest() {
 }
 
 function GetApproveBtn(SingleType, type, e) {
-  // console.log(e.dataset.id);
   Swal.fire({
     icon: "warning",
     title: type == 2 ? `Approve?` : `Reject?`,
@@ -608,17 +543,16 @@ function GetApproveBtn(SingleType, type, e) {
       connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, ``, function (output) {
         console.log(output)
         if (output.status == 200) {
-          location.reload()
+          Swal.fire({
+            title: 'Success!',
+            icon: 'success',
+          }).then((result) => {
+            location.reload();
+          });
         }
       })
-
-
     }
-
   })
-
-
-
 }
 
 function GetRejectBtn() {
@@ -629,6 +563,29 @@ function GetRejectBtn() {
     confirmButtonText: 'ตกลง',
     cancelButtonText: 'ยกเลิก'
   })
-
 }
 
+
+function getdataHistoryRequestEmp() {
+  let dataAPI = {
+  }
+  console.log(dataAPI)
+  connectApi('get/formrequest', { type: 'Myhistory', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let body = byId('tbody-historyrequest')
+      body.innerHTML = '';
+      let ArrayStuts = ['', 'Request', 'Approve', 'Reject'];
+      let ArrayStutsBg = ['', '#facc15', '#14b8a6', '#ef4444'];
+      output.data.forEach(request => {
+        body.innerHTML += `  <tr>
+        <td>${request.request_token}</td>
+        <td>${request.emp_fname} ${request.emp_lname}</td>
+        <td>${moment(request.date_select).format('DD/MM/YYYY')}</td>
+        <td class="text-center fw-semibold bg_result_A " style=" background-color: ${ArrayStutsBg[request.date_status]}; border-radius:100px; width: 150px" >
+        ${ArrayStuts[request.date_status]}</td>
+      </tr>`
+      })
+    }
+  })
+}
