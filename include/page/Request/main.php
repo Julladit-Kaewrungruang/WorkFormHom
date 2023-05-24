@@ -27,15 +27,6 @@
                         <button class="button-29" id="submit-button"><span>Submit</span></button>
                     </div>
                 </div>
-
-
-
-
-
-
-
-
-
             </div>
         </div>
     </div>
@@ -58,48 +49,48 @@
             <ul id="selected-dates"></ul>
         </div>
     </div> -->
-
-
-
-
-
-
-
-
-
-
 </div>
 
 <script>
+    var data = [];
     $('.date').datepicker({
         multidate: true,
         format: 'dd/mm/yyyy',
         language: 'th',
         todayHighlight: true,
         clearBtn: true,
+        beforeShowDay: function(date) {
+            var dateString = moment(date).format('DD/MM/YYYY');
+            if (data.includes(dateString) || data.length >= 2) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }).on('changeDate', function(e) {
-        // console.log(e.dates)
         let data_ = e.dates;
         data_ = data_.sort(function(a, b) {
             return a - b;
         });
-        // console.log(data_)
+        data = data_.map(function(date) {
+            return moment(date).format('DD/MM/YYYY');
+        });
+
         var selectedDates = data_.map(function(date) {
             return $('<li>').text(moment(date).format('YYYY-MM-DD'));
         });
         $('#selected-dates').empty().append(selectedDates);
+        console.log(data_);
+        console.log("test : " + data);
     });
-
     // $('#selected-dates').click(function(){
     //     $('inputselectDate_').click();
     //     console.log(1)
     // })
     $('#submit-button').on('click', function() {
+
         requestform()
 
-        // $('#my-form')[0].reset();
-        // $('#selected-dates').empty();
-        // $('#remark-input').val('');
     });
 </script>
 

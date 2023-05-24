@@ -16,28 +16,6 @@
                 </thead>
                 <tbody id="tbody-historyrequest">
                     <tr>
-                        <td>2023-04-26</td>
-                        <td>2023-04-27</td>
-                        <td class="text-center fw-semibold  bg-success-subtle">Approve</td>
-
-                    </tr>
-                    <tr>
-                        <td>2023-04-28</td>
-                        <td>2023-04-29</td>
-                        <td class=" bg_Approve text-center fw-semibold bg_result_R bg-danger-subtle">Reject</td>
-
-                    </tr>
-                    <tr>
-                        <td>2023-05-02</td>
-                        <td>2023-05-03</td>
-                        <td class="text-center fw-semibold bg_result_A bg-warning-subtle">Request</td>
-
-                    </tr>
-                    <tr>
-                        <td>2023-05-12</td>
-                        <td>2023-05-13</td>
-                        <td class="text-center fw-semibold bg_result_R">Reject</td>
-
                     </tr>
                 </tbody>
             </table>
