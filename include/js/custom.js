@@ -106,6 +106,7 @@ function getdataEmpRequest() {
         body.innerHTML += `<tr class="align-items-center">
           <td>${request.request_token}</td>
           <td>${request.emp_fname} ${request.emp_lname}</td>
+          
           <td>${date1.length} Day</td>
           <td > <button  class="button-29">
           <a href='EmployeeRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
@@ -248,7 +249,7 @@ function getdataHeadDetailReq(token) {
                   <p>Position : ${request.emp_positionName}</p>
               </div>
           </div>
-      </div>
+      </div> 
       <div class="col">
           <p>ID : ${request.request_token}</p>
           <div class="row">
@@ -521,8 +522,9 @@ function GetApproveBtn(SingleType, type, e) {
     icon: "warning",
     title: type == 2 ? `Approve?` : `Reject?`,
     showCancelButton: true,
-    confirmButtonText: 'ตกลง',
-    cancelButtonText: 'ยกเลิก'
+    confirmButtonText: 'Confirm',
+    confirmButtonColor: "#10b981",
+    cancelButtonText: 'Cancel'
   }).then((result) => {
     if (result.isConfirmed) {
       let check = [];

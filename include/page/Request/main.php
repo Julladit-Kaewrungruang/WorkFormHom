@@ -11,7 +11,7 @@
             <div class="card p-3 shadow-xl">
                 <div id="formRequest2">
                     <div class="mb-3" id="my-form">
-                        <label for="">Select Date </label>
+                        <label for="">Select Date <span style="color: red;">*</span></label>
                         <input type="text" id="inputselectDate_" class="form-control date">
                     </div>
                     <div class="mb-3">
@@ -61,11 +61,13 @@
         clearBtn: true,
         beforeShowDay: function(date) {
             var dateString = moment(date).format('DD/MM/YYYY');
-            if (data.includes(dateString) || data.length >= 2) {
+            var weekDates = data.filter(function(d) {
+                return moment(d, 'DD/MM/YYYY').isoWeek() === moment(date, 'DD/MM/YYYY').isoWeek();
+            });
+            if (data.includes(dateString) || weekDates.length >= 1) {
                 return false;
-            } else {
-                return true;
             }
+            return true;
         }
     }).on('changeDate', function(e) {
         let data_ = e.dates;
@@ -80,17 +82,26 @@
             return $('<li>').text(moment(date).format('YYYY-MM-DD'));
         });
         $('#selected-dates').empty().append(selectedDates);
-        console.log(data_);
+        console.log("Data : " + data_);
         console.log("test : " + data);
     });
+
+
     // $('#selected-dates').click(function(){
     //     $('inputselectDate_').click();
     //     console.log(1)
     // })
     $('#submit-button').on('click', function() {
-
+        var selectedDates = $('#inputselectDate_').val();
+        if (selectedDates.trim() === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Please select a date',
+                text: 'Please select at least one date',
+            });
+            return;
+        }
         requestform()
-
     });
 </script>
 
