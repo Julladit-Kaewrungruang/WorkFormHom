@@ -3,11 +3,11 @@ function testCallAPI() {
     start: 1,
     end: 0
   }
-  connectApi('get/dashboard', { type: 'SumExpire', data: dataAPI, dataoption: 0 }, ``, function (output) {
-    console.log(output)
-    if (output.status == 200) {
-    }
-  })
+  // connectApi('get/dashboard', { type: 'SumExpire', data: dataAPI, dataoption: 0 }, ``, function (output) {
+  //   console.log(output)
+  //   if (output.status == 200) {
+  //   }
+  // })
 }
 
 function openModalNewtask(type) {
@@ -43,8 +43,9 @@ function openModalNewtask(type) {
 
 function requestform() {
   Swal.fire({
-    icon: "warning",
+    // icon: "warning",
     title: "Confirm?",
+    html: `<img src="https://i.gifer.com/4yjE.gif" width="100%">`,
     showCancelButton: true,
     confirmButtonText: 'ตกลง',
     cancelButtonText: 'ยกเลิก'
@@ -54,14 +55,6 @@ function requestform() {
         return $(this).text();
       }).get();
       var remark = $('#remark-input').val();
-      // console.log("Selected date: " + date + ", Remark: " + remark);
-      // console.log(arrdate)
-      // let arrDate_new = []
-      // arrdate.forEach(date => {
-      //   // console.log(date)
-      //   arrDate_new.push(moment(date).format('YYYY-MM-DD'));
-      // });
-
       let dataAPI = {
         date: arrdate,
         remark: remark
@@ -70,7 +63,6 @@ function requestform() {
       connectApi('get/formrequest', { type: 'request', data: dataAPI, dataoption: 0 }, `formRequest2`, function (output) {
         console.log(output)
         if (output.status == 200) {
-          // ...
           Swal.fire({
             title: 'Request Success!',
             icon: 'success',
@@ -80,16 +72,9 @@ function requestform() {
         }
       })
     } else {
-      // Swal.fire({
-      //   title: 'Unsuccessful!',
-      //   icon: 'error'
-      // });
     }
   })
-
 }
-
-
 
 function getdataEmpRequest() {
   let dataAPI = {
@@ -104,9 +89,10 @@ function getdataEmpRequest() {
         let date1 = request.date;
         // let date = convertDate(moment(request.date_select)/1000);
         body.innerHTML += `<tr class="align-items-center">
+          <td>${moment(request.request_create_at).format('D MMM YY')} at ${moment(request.request_create_at).format('H:mm')}</td>
           <td>${request.request_token}</td>
           <td>${request.emp_fname} ${request.emp_lname}</td>
-          
+          <td>${request.emp_positionName}</td>
           <td>${date1.length} Day</td>
           <td > <button  class="button-29">
           <a href='EmployeeRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
@@ -127,12 +113,11 @@ function getdataDetailReq(token) {
     if (output.status == 200) {
       let body = byId('tbody-Detail')
       body.innerHTML = '';
-
       let bodyH = byId('Head-Detail')
       bodyH.innerHTML = '';
-
       output.data.forEach(request => {
         let date1 = request.date;
+        let Approved = request.Approved;
         bodyH.innerHTML = `<div class="col my-2" >
         <img src=${request.emp_profile} style="width: 20%; height: auto; border-radius: 10px;" class="mb-5 ms-3">
         <div style="display: inline-block;">
@@ -152,21 +137,185 @@ function getdataDetailReq(token) {
     <div class="col">
         <p>${date1.length} Day</p>
     </div>`
+        let contApprove = 0;
         date1.forEach(date => {
+          date.date_status == 1 ? contApprove++ : null;
           body.innerHTML += ` <tr class="text-center">
-          <td><input type="checkbox" name="foo" value="${date.date_id}" class="checkDateDetail" onClick="checkAll()"> </td>
+          <td> ${date.date_status == 1 ? `<input type="checkbox" name="foo" value="${date.date_id}" class="checkDateDetail" onClick="checkAll()">` : ``} </td>   
           <td>${moment(date.date_select).format('DD/MM/YYYY')}</td>
             <td> 
             ${date.date_status == 1 ? `<button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,2,this)">Approve</button>
-            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>` : ``}
-            
+            <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" 
+            data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>` : date.date_status == 2 ? `<span class="text-success">Approved</span>` : `<span class="text-danger">Rejected</span>`}
             </td>
           </tr>`
         })
-        Cale(date1);
+        if (contApprove == 0) {
+          byId(`btnCheckAll1`).style.display = "none";
+        }
+        Cale(date1, Approved);
       })
+      let params = new URLSearchParams(window.location.search);
+      console.log(params);
+      let action = params.get("action");
+      if (!!action) {
+        $('#btnCheckAll1').click();
+        console.log(action);
+        if (action === "Approve") {
+          // $("#btnCheckAll1").click()
+          GetApproveBtn(0, 2, 'this')
+        } else if (action === "Reject") {
+          GetApproveBtn(0, 3, 'this')
+        }
+      }
     }
   })
+}
+
+function getdataDetailReq2(token) {
+  let dataAPI = {
+    token: token
+  }
+  console.log(dataAPI)
+  connectApi('get/DetailRequest', { type: 'detailReq', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let ArrayStuts = ['', 'Requested', 'Approved', 'Rejected', 'Cancel request'];
+      let ArrayStutsBg = ['', '#E0F183', '#22c55e', '#F97866', '#9ca3af'];
+      let body = byId('tbody-Detail')
+      body.innerHTML = '';
+      let bodyH = byId('Head-Detail')
+      bodyH.innerHTML = '';
+      output.data.forEach(request => {
+        let date1 = request.date;
+        let Approved = request.Approved;
+        bodyH.innerHTML = `<div class="col my-2" >
+        <img src=${request.emp_profile} style="width: 20%; height: auto; border-radius: 10px;" class="mb-5 ms-3">
+        <div style="display: inline-block;">
+            <div class="ms-3">
+                <p>Name : ${request.emp_fname} ${request.emp_lname}</p>
+                <p>Email : ${request.emp_email} </p>
+                <p>Position : ${request.emp_positionName}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <p>ID : ${request.request_token}</p>
+        <div class="row">
+            <p>เมื่อ : ${moment(request.request_create_at).format('DD/MM/YYYY, h:mm:ss a')}</p>
+        </div>
+    </div>
+    <div class="col">
+        <p>${date1.length} Day</p>
+    </div>`
+        let contApprove = 0;
+        date1.forEach(date => {
+          date.date_status == 1 ? contApprove++ : null;
+          body.innerHTML += ` <tr class="text-center">
+          <td> ${date.date_status == 1 ? `<input type="checkbox" name="foo" value="${date.date_id}" class="checkDateDetail" onClick="checkAll()">` : ``} </td>   
+      <td>${moment(date.date_select).format('DD/MM/YYYY')}</td>
+      <td class="text-center fw-semibold bg_result_A " style=" color: ${ArrayStutsBg[date.date_status]}; border-radius:100px; width: 150px" >
+      ${ArrayStuts[date.date_status]}</td>
+      <td>${date.date_status == 1 ? `
+      <button type="button" class="button-29" style="border-radius: 15px;" data-id="${date.date_id}"  onclick="CancelReqDate(1,4,this)">Cancel</button>` : ``}</td>
+      </tr>`
+        })
+        if (contApprove == 0) {
+          byId(`btnCheckAll1`).style.display = "none";
+        }
+        Cale(date1, Approved);
+      })
+      let params = new URLSearchParams(window.location.search);
+      console.log(params);
+      let action = params.get("action");
+      if (!!action) {
+        $('#btnCheckAll1').click();
+        console.log(action);
+        if (action === "Cancel") {
+          CancelReqDate(0, 4, 'this')
+          console.log(type);
+        }
+      }
+    }
+  })
+}
+
+function getdataShowCale() {
+  let dataAPI = {
+  }
+  console.log(dataAPI)
+  connectApi('get/formrequest', { type: 'ShowCalenderdate', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let body = byId('ShowCaleReq')
+      body.innerHTML = '';
+      body.innerHTML = `
+        <div class="div my-3 ">
+        <div id='calendar'></div> 
+        </div>`
+      ShowCale(output.data);
+    }
+  })
+}
+
+function ShowCale(Approved) {
+  let EventAll = [];
+  Approved.forEach(Approve => {
+    EventAll.push({
+      title: Approve.emp_fname,
+      start: `${Approve.date_select} 09:00:00`,
+      color: '#e2283b'
+    });
+  });
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    defaultView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,listMonth'
+    },
+    events: EventAll,
+    eventRender: function (info) {
+      var dotEl = document.createElement('div');
+      dotEl.className = 'event-dot';
+      info.el.querySelector('.fc-event-title').appendChild(dotEl);
+    }
+  });
+  calendar.render();
+}
+
+function Cale(date1, Approved) {
+  let EventAll = [];
+  date1.forEach(date => {
+    EventAll.push({
+      title: date.emp_fname,
+      start: date.date_select,
+      color: '#97B6B8'
+    })
+  })
+  Approved.forEach(Approve => {
+    EventAll.push({
+      title: Approve.emp_fname,
+      start: `${Approve.date_select} 09:00:00`,
+    })
+  })
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    defaultView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,listMonth'
+    },
+    events: EventAll,
+    eventRender: function (info) {
+      var dotEl = document.createElement('div');
+      dotEl.className = 'event-dot';
+      info.el.querySelector('.fc-event-title').appendChild(dotEl);
+    }
+  });
+  calendar.render();
 }
 
 function checkAll() {
@@ -180,7 +329,7 @@ function checkAll() {
   }
 }
 
-function ClickAll(elem) {
+function ClickAll1(elem) {
   if (elem.checked) {
     let checkboxes = document.getElementsByName("foo");
     for (let i = 0; i < checkboxes.length; i++) {
@@ -195,36 +344,8 @@ function ClickAll(elem) {
   checkAll()
 }
 
+function checkBtnCancel() {
 
-function Cale(date1) {
-  let EventAll = [];
-  // document.addEventListener('DOMContentLoaded', function() {
-  date1.forEach(date => {
-    EventAll.push({
-      title: date.emp_fname,
-      start: date.date_select,
-      // color: '#a6a6a6'
-      color: '#f97316'
-    })
-  })
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    defaultView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,listMonth'
-    },
-    events: EventAll,
-    // eventColor: '#378006',
-    eventRender: function (info) {
-      var dotEl = document.createElement('div');
-      dotEl.className = 'event-dot';
-
-      info.el.querySelector('.fc-event-title').appendChild(dotEl);
-    }
-  });
-  calendar.render();
 }
 
 function getdataHeadDetailReq(token) {
@@ -259,7 +380,6 @@ function getdataHeadDetailReq(token) {
       <div class="col">
           <p>${date1.length} Day</p>
       </div>`
-
         })
       })
     }
@@ -268,7 +388,6 @@ function getdataHeadDetailReq(token) {
 
 function getdataMyTeam() {
   let dataAPI = {
-
   }
   console.log(dataAPI)
   connectApi('get/formrequest', { type: 'MyTeam', data: dataAPI, dataoption: 0 }, ``, function (output) {
@@ -285,7 +404,6 @@ function getdataMyTeam() {
         <td>10</td>
         <td>05</td>
     </tr>`
-
       })
     }
   })
@@ -293,7 +411,6 @@ function getdataMyTeam() {
 
 function getemployee() {
   let dataAPI = {
-
   }
   console.log(dataAPI)
   connectApi('get/employee', { type: 'employee', data: dataAPI, dataoption: 0 }, ``, function (output) {
@@ -302,14 +419,13 @@ function getemployee() {
       let body = byId('tbody-employee')
       body.innerHTML = '';
       output.data.Test_type.forEach(request => {
-        // let date = convertDate(moment(request.date_select)/1000);
-        body.innerHTML += ` <tr>
+        let date = request.date_select;
+        body.innerHTML = ` <tr>
         <td>${request.emp_fname} ${request.emp_lname}</td>
         <td>${request.orgunit_name}</td>
-        <td>${moment(request.date_select).format('DD/MM/YYYY')}</td>
+        <td>${date.length}</td>
         <td>26/4/2023</td>
     </tr>`
-
       })
     }
   })
@@ -326,7 +442,6 @@ function getDataAddWork() {
       // body.innerHTML = '';
       output.data.forEach(todoList => {
         let body = byId(`showtodo_${todoList.todo_type}`)
-
         body.innerHTML += `<div class="card mb-2 task" draggable="true" data-token="${todoList.todo_token}">
         <div class="card-body">
             <h5 class="card-title">${todoList.todo_title}</h5>
@@ -336,15 +451,12 @@ function getDataAddWork() {
     </div>`
       })
       MoveWork();
-
     }
-
   })
 }
 
 function CreateToDo(name, who, aboutWork, type) {
   console.log(name, who, aboutWork, type);
-
   let dataAPI = {
     name: name,
     who: who,
@@ -365,15 +477,11 @@ function CreateToDo(name, who, aboutWork, type) {
             <h5 class="card-title">${todoList.todo_title}</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">${todoList.todo_owner}</h6>
             <p class="card-text">${todoList.todo_description}</p>
-            
         </div>
-        
     </div>`
-
         const cardContainer = byId(`showtodo_${type}`);
         cardContainer.insertAdjacentHTML('beforeend', card);
         byId('my-form').reset();
-
         MoveWork();
       })
     }
@@ -387,7 +495,6 @@ function UpdateTodoType(newtype, token) {
   let dataAPI = {
     newtype: newtype,
     token: token,
-
   }
   console.log(dataAPI)
   connectApi('get/work', { type: 'UpdataType', data: dataAPI, dataoption: 0 }, ``, function (output) {
@@ -396,7 +503,6 @@ function UpdateTodoType(newtype, token) {
 }
 
 function getdataTestTeam() {
-
   let dataAPI = {
     start: moment(SELECT_FILTER__START_DAY).format('YYYY-MM-DD'),
     end: moment(SELECT_FILTER__END_DAY).format('YYYY-MM-DD'),
@@ -417,7 +523,6 @@ function getdataTestTeam() {
         <td data-type="todo"> ${Test.todo.length > 0 ? addCommas(Test.todo.length) : '-'}</td>
         <td data-type="doing"> ${Test.doing.length > 0 ? addCommas(Test.doing.length) : '-'}</td>
         <td data-type="done">${Test.done.length > 0 ? addCommas(Test.done.length) : '-'}</td>
-        
     </tr>`
         console.log(Test);
       })
@@ -496,7 +601,6 @@ function createBoxFilterDateToDo() {
 
 function getdataHistoryRequest() {
   let dataAPI = {
-
   }
   console.log(dataAPI)
   connectApi('get/formrequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
@@ -511,7 +615,6 @@ function getdataHistoryRequest() {
         <td>${request.emp_positionName}</td>
         <td>${request.date_status}</td>
     </tr>`
-
       })
     }
   })
@@ -519,8 +622,9 @@ function getdataHistoryRequest() {
 
 function GetApproveBtn(SingleType, type, e) {
   Swal.fire({
-    icon: "warning",
+    // icon: "warning",
     title: type == 2 ? `Approve?` : `Reject?`,
+    html: `<img src="https://i.gifer.com/LyZJ.gif" width="100%">`,
     showCancelButton: true,
     confirmButtonText: 'Confirm',
     confirmButtonColor: "#10b981",
@@ -547,6 +651,7 @@ function GetApproveBtn(SingleType, type, e) {
         if (output.status == 200) {
           Swal.fire({
             title: 'Success!',
+            html: `<img src="https://i.gifer.com/Es0.gif" width="100%">`,
             icon: 'success',
           }).then((result) => {
             location.reload();
@@ -557,35 +662,69 @@ function GetApproveBtn(SingleType, type, e) {
   })
 }
 
-function GetRejectBtn() {
+function CancelReqDate(SingleType, type, e) {
+  console.log(SingleType, type, e);
   Swal.fire({
-    icon: "warning",
-    title: "ยืนยัน...asdasdas.",
+    // icon: "warning",
+    title: `Cancel?`,
+    html: `<img src="https://cdn.vox-cdn.com/thumbor/SFU8wqXYsSS_C-6NgerZMePh4Po=/0x15:500x348/1400x1050/filters:focal(0x15:500x348):format(gif)/cdn.vox-cdn.com/uploads/chorus_image/image/36992002/tumblr_lmwsamrrxT1qagx30.0.0.gif" width="100%">`,
     showCancelButton: true,
-    confirmButtonText: 'ตกลง',
-    cancelButtonText: 'ยกเลิก'
+    confirmButtonText: 'Confirm',
+    confirmButtonColor: "#10b981",
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let check = [];
+      if (SingleType == 0) {
+        let checkDateDetail = FindAll(`.checkDateDetail:checked`);
+        checkDateDetail.forEach(date => {
+          check.push(parseInt(date.value))
+        })
+      } else {
+        check.push(parseInt(e.dataset.id))
+      }
+      console.log(check);
+      let dataAPI = {
+        type: type,
+        check: check,
+      }
+      connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, ``, function (output) {
+        console.log(output)
+        if (output.status == 200) {
+          Swal.fire({
+            title: 'Success!',
+            icon: 'success',
+          }).then((result) => {
+            location.reload();
+          });
+        }
+      })
+    }
   })
 }
 
-
-function getdataHistoryRequestEmp() {
+function getdataHistoryRequestEmp(token) {
   let dataAPI = {
+    token: token,
   }
   console.log(dataAPI)
-  connectApi('get/formrequest', { type: 'Myhistory', data: dataAPI, dataoption: 0 }, ``, function (output) {
+  connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
     console.log(output)
     if (output.status == 200) {
       let body = byId('tbody-historyrequest')
       body.innerHTML = '';
       let ArrayStuts = ['', 'Request', 'Approve', 'Reject'];
-      let ArrayStutsBg = ['', '#facc15', '#14b8a6', '#ef4444'];
-      output.data.forEach(request => {
-        body.innerHTML += `  <tr>
+      let ArrayStutsBg = ['', '#E0F183', '#07FAA5', '#F97866'];
+      output.data.employeeRequest1.forEach(request => {
+        let date1 = request.date;
+        body.innerHTML += `<tr class="align-items-center">
+        <td>${moment(request.request_create_at).format('D MMM YY')} at ${moment(request.request_create_at).format('H:mm')}</td>
         <td>${request.request_token}</td>
         <td>${request.emp_fname} ${request.emp_lname}</td>
-        <td>${moment(request.date_select).format('DD/MM/YYYY')}</td>
-        <td class="text-center fw-semibold bg_result_A " style=" background-color: ${ArrayStutsBg[request.date_status]}; border-radius:100px; width: 150px" >
-        ${ArrayStuts[request.date_status]}</td>
+        <td>${date1.length} Day</td>
+        <td > <button  class="button-29">
+        <a href='HistoryRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
+         </td>
       </tr>`
       })
     }

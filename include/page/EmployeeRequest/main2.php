@@ -34,7 +34,7 @@
         <table class="table">
             <thead>
                 <tr class="text-center">
-                    <th><input type="checkbox" name="foo" value="bar1" onClick="ClickAll(this)" class="checkDate"> All <br /></th>
+                    <th><input type="checkbox" name="foo" value="bar1" onClick="ClickAll1(this)" class="checkDate" id="btnCheckAll1"> All <br /></th>
                     <th>Detail</th>
                     <th>#Req Number</th>
                 </tr>
@@ -85,39 +85,9 @@
 </div>
 
 
-
-
-<script>
-    
-
-    // function checkAll(elem) {
-    //     if (elem.checked) {
-    //         let checkboxes = document.getElementsByName("foo");
-    //         for (let i = 0; i < checkboxes.length; i++) {
-    //             checkboxes[i].checked = true;
-    //         }
-    //     } else {
-    //         let checkboxes = document.getElementsByName("foo");
-    //         for (let i = 0; i < checkboxes.length; i++) {
-    //             checkboxes[i].checked = false;
-    //         }
-    //     }
-    //     var ShowBtn = document.getElementById("showBtnAll");
-
-    //     if (elem.checked ) { // เปลี่ยนจาก celem เป็น elem
-    //         ShowBtn.style.display = "block";
-
-    //     } else {
-    //         ShowBtn.style.display = "none";
-
-    //     }
-    // }
-</script>
+<!-- <?php echo $token ; ?> -->
 <script type="text/javascript">
     $(window).ready(() => {
-        // getdataHeadDetailReq()
-        getdataDetailReq('<?= $token ?>')
-        
-
+        getdataDetailReq('<?= $token ?>')  
     });
 </script>

@@ -5,10 +5,12 @@
     <div class="">
         <p class="text-gray-800 fs-5">Date Picker</p>
     </div>
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4 ">
-            <div class="card p-3 shadow-xl">
+
+    <div class="row  shadow-sm mx-2 my-4" style="border: 0.5px solid #e2e8f0;">
+        <div class="col" style="height: 100%; width: 100%;" id="ShowCaleReq">
+        </div>
+        <div class="col">
+            <div class="card p-3 shadow-xl mt-5 mx-3">
                 <div id="formRequest2">
                     <div class="mb-3" id="my-form">
                         <label for="">Select Date <span style="color: red;">*</span></label>
@@ -18,7 +20,6 @@
                         <div>Selected Date</div>
                         <ul id="selected-dates"></ul>
                     </div>
-
                     <div class="mb-3">
                         <label for="">Remark </label>
                         <textarea name="" id="remark-input" class="form-control" cols="30" rows="3"></textarea>
@@ -30,26 +31,8 @@
             </div>
         </div>
     </div>
-
-    <!-- <div class="mt-3">
-        <div class=" mx-2">
-            <p class="text-gray-800 fs-5 ">Remark</p>
-        </div>
-        <div class="row">
-            <div class="col col-5 mx-1 ">
-                <input type="text" id="remark-input" class="form-control" aria-describedby="emailHelp"
-                    placeholder="Type here..." style="border-radius: 10px;">
-            </div>
-            <div class="col-12 col-md-auto ml-auto">
-                <button class="custom-btn btn-6" id="submit-button"><span>Submit</span></button>
-            </div>
-        </div>
-        <div class="">
-            <div>Selected Date</div>
-            <ul id="selected-dates"></ul>
-        </div>
-    </div> -->
 </div>
+
 
 <script>
     var data = [];
@@ -85,12 +68,6 @@
         console.log("Data : " + data_);
         console.log("test : " + data);
     });
-
-
-    // $('#selected-dates').click(function(){
-    //     $('inputselectDate_').click();
-    //     console.log(1)
-    // })
     $('#submit-button').on('click', function() {
         var selectedDates = $('#inputselectDate_').val();
         if (selectedDates.trim() === '') {
@@ -107,6 +84,6 @@
 
 <script type="text/javascript">
     $(window).ready(() => {
-
+        getdataShowCale()
     });
 </script>

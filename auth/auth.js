@@ -107,7 +107,8 @@ function bindGpLoginBtnTech(frompage) {
 }
 
 function checkDataEmpCode(frompage) {
-    FROMPAGE = frompage
+    FROMPAGE = frompage;
+    // console.log(FROMPAGE);
     let arrIdInput = ['empCode','empEmail']
     if (checkDataInputRequest(arrIdInput)) {
         let empCode = byId('empCode').value

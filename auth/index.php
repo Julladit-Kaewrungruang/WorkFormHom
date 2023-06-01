@@ -4,8 +4,10 @@ require('../include/php/function-index.php');
 // $datalogin = checklogin();
 // session_destroy();
 // echo $_SESSION['from-page'];
+
 if(isset($_SESSION['from-page'])){
     $frompage = $_SESSION['from-page'];
+    // echo $_SESSION['from-page1'];
 }else{
     $frompage = '';
 }

@@ -1,13 +1,13 @@
 <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion sss" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="RequestWFH">
         <div class="sidebar-brand-text mx-3">Productive Anywhere</div>
     </a>
     <hr class="sidebar-divider my-0" />
-    <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>home">
+    <!-- <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>home">
         <a class="nav-link" href="<?= BASEPATH ?>home">
             <i class="bi bi-house-door"></i>
             <span>Home</span></a>
-    </li>
+    </li> -->
     <!-- <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>addwork">
         <a class="nav-link" href="<?= BASEPATH ?>addwork">
             <i class="bi bi-clipboard-plus-fill"></i>

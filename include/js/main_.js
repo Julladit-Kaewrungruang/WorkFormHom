@@ -28,7 +28,7 @@ function setPathURL_T(path) {
     //console.log(path)
     BASEPATH = path;
     DEFAULT_PROFILE = `${BASEPATH}include/img/profile/defaultProfile.jpg`;
-//     URLAPI = `${path}api/eLearning/`;
+//     URLAPI = `${path}api/master/`;
     // //console.log(path, URLAPI);
     // //console.log(YOURDOMAIN)
 }

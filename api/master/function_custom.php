@@ -9,12 +9,8 @@ function getDashboard($type, $dataAPI, $dataoption)
     if ($type == 'GraphExpireInYear') {
     } else if ($type == 'SumExpire') {
     }
-
-
-
     return setDataReturn($code, $datareturn);
 }
-
 
 function manageAdmin($type, $dataAPI, $dataoption)
 {
@@ -25,7 +21,6 @@ function manageAdmin($type, $dataAPI, $dataoption)
     }
     return setDataReturn($code, $datareturn);
 }
-
 
 function getformrequest($type, $dataAPI, $dataoption)
 {
@@ -42,9 +37,7 @@ function getformrequest($type, $dataAPI, $dataoption)
         ,[request_type]
         ,[request_quota]
         ,request_token', array($empId, $empId, $dataAPI['remark'], date('Y-m-d H:i:s', time()), 1, 1, $token));
-
         $wfh = getDataSQLv1(1, 'SELECT request_id from wfh_request  where request_token=?', array($token));
-
         foreach ($wfh as $request) {
             foreach ($dataAPI['date'] as $date) {
                 insertSQL('wfh_requestDate', '[date_requestid],[date_select]', array($request['request_id'], $date));
@@ -79,6 +72,12 @@ function getformrequest($type, $dataAPI, $dataoption)
             left join user_emp_view on todo_type=request_to
             where date_status!=9
             ', array());
+    } else if ($type == 'ShowCalenderdate') {
+        $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
+        left join wfh_request on date_requestid=request_id
+        left join user_emp_view on emp_id=request_to
+        where date_status!=9
+        ', array());
     }
     return setDataReturn($code, $datareturn);
 }
@@ -90,37 +89,40 @@ function createTimeline()
 function sendEmailForApprove($token)
 {
     global $dateNow, $browser, $keyAPI;
-
     $wfh = getDataSQLv1(1, 'SELECT top 1 * from wfh_request 
     left join user_emp_view on requestor_id=emp_id
     where request_token=?', array($token));
     $d = array();
     foreach ($wfh as $request) {
         $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
-        if ($request['request_type'] == 2) {
-            // send mail requestor and request to;
-        } else {
-            // send to my email
 
+        foreach ($requestTo as $To) {
+            $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($To['emp_welapproved']));
+            foreach ($Leader as $Mgr) {
+                //ส่งEmailหาเมลตัวหน้างาน
+            }
         }
+        // if ($request['request_type'] == 2) {
+        //     // send mail requestor and request to;
+        // } else {
+        //     // send to my email
+        //     $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
 
+
+        // }
         // ส่งให้ตัวเอง
         $dataAPITOServer8 = array(
             'toMail' => base64_encode($request['emp_email']),
             'toName' => encrypt($keyAPI, base64_encode($request['emp_fname'])),
             'from' => encrypt($keyAPI, base64_encode($request['emp_fname'])),
             'subject' => encrypt($keyAPI, base64_encode('ยืนยันคำขอ Work From Home #' . $token)),
-            'html' => encrypt($keyAPI, base64_encode(createFormEmailRequestWFH()))
+            'html' => encrypt($keyAPI, base64_encode(createFormEmailRequestWFH($token)))
         );
         $dt = callAPISendMail($dataAPITOServer8);
-
-
-
         $request['email'] = $dt;
         $request['to'] = $requestTo;
         array_push($d, $request);
     }
-
     return $d;
 }
 
@@ -157,7 +159,6 @@ function GetWork($type, $dataAPI, $dataoption)
             array_push($datareturn, $todo);
         }
         // array_push($datareturn,$dataAPI['who']);
-
     } else if ($type == 'UpdataType') {
         $data = getDataSQLv1(1, 'SELECT * from wfh_todolist where todo_token=?', array($dataAPI['token']));
         foreach ($data as $todo) {
@@ -182,22 +183,14 @@ function GetTest($type, $dataAPI, $dataoption)
     if ($type == 'Test') {
         // $query = "SELECT * FROM user_emp_view where orgunit_name='IT Support' AND emp_status =1 ";
         $dataEmp = getDataSQLv1(1, "SELECT * FROM user_emp_view where orgunit_name='IT Support' AND emp_status =1 ", array());
-
-
-
         // $query = 'SELECT * FROM wfh_todolist where todo_owner =1';
         // $dataformemp = getDataSQLv1(1, $query, array());
         foreach ($dataEmp as $emp) {
-
-
-
             // $dataDoing = getDataSQLv1(1, 'SELECT * FROM wfh_todolist where todo_owner =1', array());
             // $dataDone = getDataSQLv1(1, 'SELECT * FROM wfh_todolist where todo_owner =1', array());
             $emp['todo'] = searchDataTodoByEmp($emp['emp_id'], 'todo');
             $emp['doing'] = searchDataTodoByEmp($emp['emp_id'], 'doing');
             $emp['done'] = searchDataTodoByEmp($emp['emp_id'], 'done');
-
-
             array_push($datareturn['Test_type'], $emp);
         }
         // foreach ($dataformemp as $form) {
@@ -207,7 +200,6 @@ function GetTest($type, $dataAPI, $dataoption)
     return setDataReturn($codeReturn, $datareturn);
 }
 
-
 function getemployee($type, $dataAPI, $dataoption)
 {
     global $dateNow, $browser, $keyAPI;
@@ -216,16 +208,10 @@ function getemployee($type, $dataAPI, $dataoption)
     $empId = $_SESSION['emp_id'];
     // $data = array();
     if ($type == 'employee') {
-        $dataEmp = getDataSQLv1(1, "SELECT * FROM user_emp_view where emp_status =1", array());
-        // $dataform = getDataSQLv1(1, $query, array());
-
-
+        $dataEmp = getDataSQLv1(1, "SELECT * FROM wfh_requestDate left join wfh_request on date_requestid=request_id  left join user_emp_view on request_to=emp_id where emp_status =1 AND date_status=2", array());
         foreach ($dataEmp as $form) {
             array_push($datareturn['Test_type'], $form);
         }
-        // foreach ($dataformemp as $form) {4
-        //     array_push($datareturn['it_type'], $form);
-        // }
     }
     return setDataReturn($codeReturn, $datareturn);
 }
@@ -247,9 +233,7 @@ function GetEmployeeRequest($type, $dataAPI, $dataoption)
     if ($type == 'employeeRequest') {
         $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9", array());
         foreach ($dataEmp as $form) {
-
             $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
-
             $form['date'] = $datadate;
             array_push($datareturn['employeeRequest1'], $form);
         }
@@ -282,24 +266,23 @@ function GetDetailRequest($type, $dataAPI, $dataoption)
     global $dateNow, $browser, $keyAPI;
     $datareturn = array();
     $codeReturn = 0;
-    $empId = $_SESSION['emp_id'];
+    // $empId = $_SESSION['emp_id'];
     // $data = array();0
     if ($type == 'detailReq') {
-        // $dataEmp = getDataSQLv1(1, "SELECT * from wfh_requestDate  
-        // left join wfh_request on date_requestid=request_id
-        // left join user_emp_view on emp_id=request_to
-        // where date_status!=9
-        // ", array());
-        // foreach ($dataEmp as $form) {
-        //     array_push($datareturn['detailRequest'], $form);
-        // }
         $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND request_token=?", array($dataAPI['token']));
         foreach ($dataEmp as $form) {
-
             $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate 
-              left join wfh_request on date_requestid=request_id
-             left join user_emp_view on emp_id=request_to
-            where date_status!=9 AND date_requestid=?", array($form['request_id']));
+                left join wfh_request on date_requestid=request_id
+                left join user_emp_view on emp_id=request_to
+                where date_status!=9 AND date_requestid=?", array($form['request_id']));
+
+            $Approved = getDataSQLv1(1, "SELECT * from wfh_requestDate 
+            left join wfh_request on date_requestid=request_id
+            left join user_emp_view on emp_id=request_to
+            where date_status=2 ", array());
+
+
+            $form['Approved'] = $Approved;
 
             $form['date'] = $datadate;
             array_push($datareturn, $form);
@@ -307,21 +290,21 @@ function GetDetailRequest($type, $dataAPI, $dataoption)
     } else if ($type == 'HeadDetail') {
         $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND request_token=?", array($dataAPI['token']));
         foreach ($dataEmp as $form) {
-
             $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
-
             $form['date'] = $datadate;
             array_push($datareturn, $form);
         }
-    }else if ($type == 'ApproveAll') {
-
-        foreach($dataAPI['check'] as $date){
-             updateSQL('wfh_requestDate', 'date_status=?', 'date_id=?', array($dataAPI['type'], $date));
+    } else if ($type == 'ApproveAll') {
+        foreach ($dataAPI['check'] as $date) {
+            updateSQL('wfh_requestDate', 'date_status=?', 'date_id=?', array($dataAPI['type'], $date));
         }
-
-       
-
         array_push($datareturn, $dataAPI);
+    } else if ($type == 'DetailHistoryEmp') {
+        $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
+        left join wfh_request on date_requestid=request_id
+        left join user_emp_view on emp_id=request_to
+        where date_status!=9
+        ', array());
     }
     return setDataReturn($codeReturn, $datareturn);
 }

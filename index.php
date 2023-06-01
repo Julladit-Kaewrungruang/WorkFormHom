@@ -58,6 +58,11 @@ define('BASEPATH', '/');
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js?v=1.3"></script>
     <script src="https://kit.fontawesome.com/64d58efce2.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js"></script>
+
+
+
+
+
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -114,9 +119,16 @@ define('BASEPATH', '/');
 
     <!-- Updated tui.Calendar JavaScript -->
     <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.ie11.min.js"></script>
+    <script type="text/javascript">
+    $(window).ready(() => {
+        // getdataHeadDetailReq()
+       
 
+        setPathURL_T('<?= BASEPATH ?>')
+      
+    });
 
-
+</script>
 </head>
 
 <body id="page-top">
@@ -168,6 +180,12 @@ define('BASEPATH', '/');
                     include('include/page/HistoryRequest/main.php');
                     // include('include/page/home/main.php');
                 });
+
+                Route::add('/HistoryRequest2/(.*)', function ($token) {
+                    include('include/page/HistoryRequest/main2.php');
+                    // include('include/page/home/main.php');
+                });
+
                 Route::add('/EmployeeRequest', function () {
                     include('include/page/EmployeeRequest/main.php');
                     // include('include/page/home/main.php');
@@ -184,10 +202,28 @@ define('BASEPATH', '/');
                     include('include/page/Myteam/main2.php');
                     // include('include/page/home/main.php');
                 });
-                Route::add('/EmployeeRequest2/(.*)', function ($token) {
+                Route::add('/Approve/(.*)', function ($token) {
                     include('include/page/EmployeeRequest/main2.php');
                     // include('include/page/home/main.php');
                 });
+
+                // Route::add('/EmployeeRequest1/(.*)/(.*)', function ($action,$token) {
+                 
+                //     include('include/page/EmployeeRequest/main2.php');
+                //     // include('include/page/home/main.php');
+                // });
+
+                Route::add('/EmployeeRequest1/(.*)/(.*)', function($token,$customer) {
+                    // include_once("include/page/survey.php");
+                    include('include/page/EmployeeRequest/main2.php');
+                });
+
+                Route::add('/EmployeeRequest2/(.*)', function ($token) {
+                    $action1 = '';
+                    include('include/page/EmployeeRequest/main2.php');
+                    // include('include/page/home/main.php');
+                });
+
 
                 Route::pathNotFound(function ($path) {
                     include('include/page/error404.php');

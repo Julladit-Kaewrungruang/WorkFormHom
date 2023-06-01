@@ -1,25 +1,17 @@
 <div class="container-fluid">
-    <!-- <div class="row">
-        <div class="col-xl-10"></div>
-        <div class="col-2 mb-2 ">
-            <label for="state" class="form-label text-start">State</label>
-            <select class="form-select" id="state" required>
-                <option value="1">pv</option>
-                <option value="2">pu</option>
-                <option value="3">team</option>
-            </select>
-            <div class="invalid-feedback">
-                Please provide a valid state.
-            </div>
-        </div>
-    </div> -->
     <div class="row">
-        <div class="col-10"></div>
-        <div class="col-2">
-            <div class=" customInputFilterDate ml-2">
-                <div class="input-group mb-2    ">
+        <div class="col-xl-10 d-flex">
+            <div class="customInputFilterDate">
+                <div class="input-group mb-2">
+                    <span class="input-group-text" id="basic-addon1"><i class="far fa-calendar"></i></span>
+                    <input type="text" id="filterDate" class="form-control" id="" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="customInputFilterDate ml-2">
+                <div class="input-group mb-2">
                     <input type="text" id="inputSearch" placeholder="Search..." class="form-control" id="" aria-label="Username" aria-describedby="basic-addon1">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+
                 </div>
             </div>
         </div>
@@ -34,8 +26,10 @@
                 <table class="table  text-black text-center overflow-auto" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th>Request Date</th>
                             <th>No.Token</th>
                             <th>Name Request</th>
+                            <th>position</th>
                             <th>Request</th>
                             <th>Approved in month</th>
 
@@ -43,44 +37,7 @@
                     </thead>
                     <tbody id="tbody-emprequest">
                         <tr>
-                            <th><input type="checkbox" name="foo" value="bar1"> <br /></th>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>2023-04-27</td>
-                            <td> <button type="submit" class="btn btn-success" style="border-radius: 15px; width: 20%;" id="approve-btn">Approve</button>
-                                <button type="submit" class="btn btn-danger" style="border-radius: 15px;width: 20%;" id="reject-btn">Reject</button>
-                            </td>
-
-
-                        </tr>
-                        <tr>
-                            <th><input type="checkbox" name="foo" value="bar1"> <br /></th>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>2023-04-27</td>
-                            <td> <button type="submit" class="btn btn-success" style="border-radius: 15px; width: 20%;" id="approve-btn">Approve</button>
-                                <button type="submit" class="btn btn-danger" style="border-radius: 15px;width: 20%;" id="reject-btn">Reject</button>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <th><input type="checkbox" name="foo" value="bar1"> <br /></th>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>2023-04-27</td>
-                            <td> <button type="submit" class="btn btn-success" style="border-radius: 15px; width: 20%;" id="approve-btn">Approve</button>
-                                <button type="submit" class="btn btn-danger" style="border-radius: 15px;width: 20%;" id="reject-btn">Reject</button>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <th><input type="checkbox" name="foo" value="bar1"> <br /></th>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>2023-04-27</td>
-                            <td> <button class="btn btn-success" style="border-radius: 15px; width: 20%;" id="approve-btn">Approve</button>
-                                <button type="submit" class="btn btn-danger" style="border-radius: 15px;width: 20%;" id="reject-btn">Reject</button>
-                            </td>
+                          
                         </tr>
                     </tbody>
 
@@ -151,6 +108,6 @@
 <script type="text/javascript">
     $(window).ready(() => {
         getdataEmpRequest()
-
+        createBoxFilterDate();
     });
 </script>
