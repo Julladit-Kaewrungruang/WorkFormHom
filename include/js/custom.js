@@ -41,6 +41,32 @@ function openModalNewtask(type) {
   })
 }
 
+function showNameEmp() {
+  let dataAPI = {
+  }
+  console.log(dataAPI)
+  connectApi('get/work', { type: 'AllEmp', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let who = '';
+      let select_emp = byId('select_emp')
+      who.innerHTML = "";
+      output.data.forEach(Emp => {
+        who += ` <option value="${Emp.emp_id}">${Emp.emp_fname} ${Emp.emp_lname}</option>`;
+      })
+
+      select_emp.innerHTML = ` <label for="who___" class="form-label">Who</label>
+      <select class="form-control selectpicker show-tick" multiple data-actions-box="true" data-live-search="true"  id="who___" name="who">
+          ${who}
+      </select>`;
+      // console.log($('#who___'))
+      $('#who___').selectpicker();
+    }
+  })
+}
+
+
+
 function requestform() {
   Swal.fire({
     // icon: "warning",
@@ -55,9 +81,16 @@ function requestform() {
         return $(this).text();
       }).get();
       var remark = $('#remark-input').val();
+      let assign = byId('btnAssignTo').checked == true ? 1 : 0;
+      let assignTo = 0;
+      if (assign == 1) {
+        assignTo = byId('emp_select_assignto').value
+      }
       let dataAPI = {
         date: arrdate,
-        remark: remark
+        remark: remark,
+        assign: assign,
+        assignTo: assignTo,
       }
       console.log(dataAPI)
       connectApi('get/formrequest', { type: 'request', data: dataAPI, dataoption: 0 }, `formRequest2`, function (output) {
@@ -75,6 +108,8 @@ function requestform() {
     }
   })
 }
+
+
 
 function getdataEmpRequest() {
   let dataAPI = {
@@ -375,6 +410,7 @@ function getdataHeadDetailReq(token) {
           <p>ID : ${request.request_token}</p>
           <div class="row">
               <p>เมื่อ : ${moment(request.request_create_at).format('DD/MM/YYYY, h:mm:ss a')}</p>
+              <p>เมื่อ : ${request.request_remark}</p>
           </div>
       </div>
       <div class="col">
@@ -420,13 +456,34 @@ function getemployee() {
       body.innerHTML = '';
       output.data.Test_type.forEach(request => {
         let date = request.date_select;
-        body.innerHTML = ` <tr>
+        body.innerHTML += ` <tr>
         <td>${request.emp_fname} ${request.emp_lname}</td>
         <td>${request.orgunit_name}</td>
-        <td>${date.length}</td>
-        <td>26/4/2023</td>
+        <td>${request.request_ids}</td>
     </tr>`
       })
+    }
+  })
+}
+
+function getemployeePostion() {
+  let dataAPI = {
+  }
+  console.log(dataAPI)
+  connectApi('get/work', { type: 'AllEmp', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let PositionEmp = ''
+      let body = byId('SeletePostion')
+      PositionEmp.innerHTML = '';
+      output.data.forEach(Emp => {
+        PositionEmp += ` <option value="${Emp.orgunit_name}">${Emp.orgunit_name}</option>`;
+      })
+      body.innerHTML = `    
+        <label for="state" class="form-label text-start" >State</label>
+        <select class="form-select" id="state" required>
+          ${PositionEmp}
+          </select>`
     }
   })
 }
@@ -454,6 +511,49 @@ function getDataAddWork() {
     }
   })
 }
+
+function getDataShowEmpReq() {
+  let dataAPI = {
+  }
+  console.log(dataAPI)
+  connectApi('get/formrequest', { type: 'empSection', data: dataAPI, dataoption: 0 }, ``, function (output) {
+    console.log(output)
+    if (output.status == 200) {
+      let body = byId('ShowEmp')
+      if (output.data.length > 0) {
+
+
+
+        let option = '';
+        output.data.forEach(emp => {
+          // body.innerHTML += `<h6 class="mb-2 text-body-secondary">${todoList.todo_owner}</h6>`
+          option += `<option value="${emp.emp_id}">${emp.emp_fname} ${emp.emp_lname} (${emp.emp_positionName})</option>`;
+        })
+
+        body.innerHTML = `<div>
+          <label for="">To</label>
+          <select class="form-select" id="emp_select_assignto">${option}</select>
+        </div>
+        `;
+
+      } else {
+        body.innerHTML = '';
+      }
+      // output.data.forEach(todoList => {
+      //   let body = byId('ShowEmp')
+      //   body.innerHTML += `<h6 class="mb-2 text-body-secondary">${todoList.todo_owner}</h6>`
+      // })
+    }
+  })
+}
+
+function checkbtnAssignTo(e) {
+  let body = byId('ShowEmp')
+  e.checked == true ? getDataShowEmpReq() : body.innerHTML = '';
+}
+
+
+
 
 function CreateToDo(name, who, aboutWork, type) {
   console.log(name, who, aboutWork, type);

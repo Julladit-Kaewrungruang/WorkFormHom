@@ -12,8 +12,8 @@
         <a class="nav-link" href="<?= BASEPATH ?>addwork">
             <i class="bi bi-clipboard-plus-fill"></i>
             <span>Add Work</span></a>
-    </li>
-    <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>Calendar">
+    </li> -->
+    <!-- <li class="nav-item menu-item" data-menu="<?= BASEPATH ?>Calendar">
         <a class="nav-link" href="<?= BASEPATH ?>Calendar">
             <i class="bi bi-calendar"></i>
             <span>Calendar</span></a>

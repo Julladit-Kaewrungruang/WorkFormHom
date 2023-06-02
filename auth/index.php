@@ -12,7 +12,7 @@ if(isset($_SESSION['from-page'])){
     $frompage = '';
 }
 
- 
+// print_r($_SESSION['from-page']);
 if(isset($_SESSION["emp_wfm_token"])){
     echo '<script>window.location="../"</script>';
 
@@ -39,7 +39,7 @@ if(isset($_SESSION["emp_wfm_token"])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบ... บริษัท บีที มิตรแลนด์ จำกัด</title>
     <!-- <link rel="stylesheet" href="app.css"/> -->
-    <link rel="icon" type="image/png" href="../include/img/logo_bt_ico.png" />
+    <link rel="icon" type="image/png" href="../favicon.ico" />
     <link href="semantic.css" rel="stylesheet" />
     <link rel="stylesheet" href="bootstrap.min.css"/>
     <link rel="stylesheet" href="auth.css?v=1"/>

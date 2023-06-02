@@ -18,8 +18,8 @@ function getDataSQL1($tablename,$whereColumn,$condition){
 function checklogin(){
   // global $dbHR;
 // print_r($_SESSION['emp_it_token']);
-// $_SESSION['from-page']=$_SERVER['REQUEST_URI'];
-
+$_SESSION['from-page']=$_SERVER['REQUEST_URI'];
+// print_r($_SESSION['from-page']);
 if(isset($_COOKIE['emp_email']) && isset($_COOKIE['emp_wfm_token'])){
   $_SESSION["emp_email"] = $_COOKIE['emp_email'];
   $_SESSION["emp_wfm_token"] = $_COOKIE['emp_wfm_token'];

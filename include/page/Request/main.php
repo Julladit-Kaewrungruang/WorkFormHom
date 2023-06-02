@@ -14,11 +14,19 @@
                 <div id="formRequest2">
                     <div class="mb-3" id="my-form">
                         <label for="">Select Date <span style="color: red;">*</span></label>
-                        <input type="text" id="inputselectDate_" class="form-control date">
+                        <input type="text" id="inputselectDate_" autocomplete="off" class="form-control date">
                     </div>
                     <div class="mb-3">
                         <div>Selected Date</div>
                         <ul id="selected-dates"></ul>
+                    </div>
+                    <div class="mb-3">
+                        
+                        <input type="checkbox" id="btnAssignTo" onclick="checkbtnAssignTo(this)" >
+                        <label for="btnAssignTo">To Employee</label>
+                    </div>
+                    <div class="mb-3" id="ShowEmp">
+                        <!-- <div class="" id="select_emp"></div> -->
                     </div>
                     <div class="mb-3">
                         <label for="">Remark </label>
@@ -84,6 +92,7 @@
 
 <script type="text/javascript">
     $(window).ready(() => {
+        // getDataShowEmpReq()
         getdataShowCale()
     });
 </script>

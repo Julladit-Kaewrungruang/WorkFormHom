@@ -15,8 +15,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-2 mb-2 ">
-            <label for="state" class="form-label text-start">State</label>
+        <div class="col-2 mb-2 " id="SeletePostion">
+            <label for="state" class="form-label text-start" >State</label>
             <select class="form-select" id="state" required>
                 <option value="">Choose...</option>
                 <option>California</option>
@@ -38,33 +38,10 @@
                             <th>Emp_name</th>
                             <th>Dapartment</th>
                             <th>Date</th>
-                            <th>Until</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-employee">
                         <tr>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>25/4/2023</td>
-                            <td>26/4/2023</td>
-                        </tr>
-                        <tr>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>25/4/2023</td>
-                            <td>26/4/2023</td>
-                        </tr>
-                        <tr>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>25/4/2023</td>
-                            <td>26/4/2023</td>
-                        </tr>
-                        <tr>
-                            <td>Julladit</td>
-                            <td>CS</td>
-                            <td>25/4/2023</td>
-                            <td>26/4/2023</td>
                         </tr>
                     </tbody>
                 </table>
@@ -76,6 +53,7 @@
 <script type="text/javascript">
     $(window).ready(() => {
         getemployee();
+        getemployeePostion();
         createBoxFilterDate();
 
 
