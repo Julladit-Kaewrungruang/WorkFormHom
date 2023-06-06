@@ -13,16 +13,21 @@
             <div class="card p-3 shadow-xl mt-5 mx-3">
                 <div id="formRequest2">
                     <div class="mb-3" id="my-form">
+                        <div class="div float-end"><input type="checkbox" id="btnSpecialCase" onclick="Special_Case(this)">
+                            <label for="btnSpecialCase">Special Case </label>
+                        </div>
+
                         <label for="">Select Date <span style="color: red;">*</span></label>
                         <input type="text" id="inputselectDate_" autocomplete="off" class="form-control date">
                     </div>
                     <div class="mb-3">
+
                         <div>Selected Date</div>
                         <ul id="selected-dates"></ul>
                     </div>
                     <div class="mb-3">
-                        
-                        <input type="checkbox" id="btnAssignTo" onclick="checkbtnAssignTo(this)" >
+
+                        <input type="checkbox" id="btnAssignTo" onclick="checkbtnAssignTo(this)">
                         <label for="btnAssignTo">To Employee</label>
                     </div>
                     <div class="mb-3" id="ShowEmp">
@@ -44,6 +49,7 @@
 
 <script>
     var data = [];
+    let checkSpecialCase = false;
     $('.date').datepicker({
         multidate: true,
         format: 'dd/mm/yyyy',
@@ -52,12 +58,15 @@
         clearBtn: true,
         beforeShowDay: function(date) {
             var dateString = moment(date).format('DD/MM/YYYY');
-            var weekDates = data.filter(function(d) {
-                return moment(d, 'DD/MM/YYYY').isoWeek() === moment(date, 'DD/MM/YYYY').isoWeek();
-            });
-            if (data.includes(dateString) || weekDates.length >= 1) {
-                return false;
+            if (checkSpecialCase == false) {
+                var weekDates = data.filter(function(d) {
+                    return moment(d, 'DD/MM/YYYY').isoWeek() === moment(date, 'DD/MM/YYYY').isoWeek();
+                });
+                if (data.includes(dateString) || weekDates.length >= 1) {
+                    return false;
+                }
             }
+
             return true;
         }
     }).on('changeDate', function(e) {
@@ -68,7 +77,6 @@
         data = data_.map(function(date) {
             return moment(date).format('DD/MM/YYYY');
         });
-
         var selectedDates = data_.map(function(date) {
             return $('<li>').text(moment(date).format('YYYY-MM-DD'));
         });
@@ -89,7 +97,6 @@
         requestform()
     });
 </script>
-
 <script type="text/javascript">
     $(window).ready(() => {
         // getDataShowEmpReq()

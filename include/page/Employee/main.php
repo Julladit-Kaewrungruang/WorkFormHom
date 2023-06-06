@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-2 mb-2 " id="SeletePostion">
-            <label for="state" class="form-label text-start" >State</label>
+            <label for="state" class="form-label text-start" >Section</label>
             <select class="form-select" id="state" required>
                 <option value="">Choose...</option>
                 <option>California</option>

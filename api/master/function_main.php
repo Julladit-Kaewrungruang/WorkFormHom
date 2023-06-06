@@ -2,6 +2,8 @@
 
 date_default_timezone_set("Asia/Bangkok");
 require_once('../../include/php/connect.php');
+
+
 // require_once('../../include/php/time.php');
 $keyAPI = 'TiwPatipanSHfQ0QrwqlRdXpwzTxvEGd7QbiADFsxEIKzsVSYgMx30YroyvBNRd5CqUbPSjvPZM6gTaRzhdKsoY8TpYgy477C7Vxoe6PdTqoOhtPJSdn19PAk4';
 if(!isset($_SESSION)){ session_start();}
@@ -222,9 +224,9 @@ function callAPISendMail($dataG){
   return $response;
 }
 
-
+$thai_dayEN_arr=array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 function createFormEmailRequestWFH($token){
-
+global $thai_dayEN_arr;
   $wfh = getDataSQLv1(1, 'SELECT top 1 * from wfh_request 
   left join user_emp_view on requestor_id=emp_id
   where request_token=?', array($token));
@@ -233,19 +235,34 @@ function createFormEmailRequestWFH($token){
 
   foreach ($wfh as $request) {
     $Leadername="";
-    $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
+    $Leaderid=0;
+    $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?  AND emp_status=1', array($request['request_to']));
 
         foreach ($requestTo as $To) {
-            $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($To['emp_welapproved']));
+            $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?  AND emp_status=1', array($To['emp_welapproved']));
             foreach ($Leader as $Mgr) {
                 //ส่งEmailหาเมลตัวหน้างาน
                 $Leadername = $Mgr['emp_fname'].' '.$Mgr['emp_lname'];
+                $Leaderid= $Mgr['emp_id'];
+
             }
         }
 
+
+
+
+        // searchDataWFHByEmpAndDate
+
     $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($request['request_id']));
     $htmlDate = '';
-    foreach( $datadate  AS $key => $date){
+    $Section = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_welapproved=? AND emp_status=1', array($Leaderid));
+    foreach( $datadate  AS $key => $date){ 
+$count = 0;
+    // foreach($Section AS $s){
+    //    $searchDataWFHByEmpAndDate= searchDataWFHByEmpAndDate($s['emp_id'],$date['date_select']);
+    //    $count+= count($searchDataWFHByEmpAndDate);
+    // }
+
       $htmlDate.='<tr>
         <td align="center" style=" font-size:14px; padding-bottom: 10px;">
             '.($key+1).'
@@ -254,11 +271,9 @@ function createFormEmailRequestWFH($token){
             '.date('d/m/Y',strtotime($date['date_select'])).'
         </td>
         <td align="center" style=" font-size:14px; padding-bottom: 10px;">
-           Sun
+           '.$thai_dayEN_arr[date('w',strtotime($date['date_select']))].'
         </td>
-        <td align="center" style=" font-size:14px; padding-bottom: 10px;">
-            0
-        </td>
+       
     </tr>';
     }
 
@@ -298,9 +313,7 @@ function createFormEmailRequestWFH($token){
                                   <th style=" font-size:14px; padding-bottom: 10px;">
                                       วัน (Mon-Fri)
                                   </th>
-                                  <th style=" font-size:14px; padding-bottom: 10px;">
-                                      จำนวนคนที่ WFH วันนั้น
-                                  </th>
+                                 
                               </tr>
                               '.$htmlDate.'
                               
@@ -378,7 +391,7 @@ function createFormEmailRequestWFH($token){
 }
 
 function createFormEmailRequestWFHNotify($token){
-
+global $thai_dayEN_arr;
   $wfh = getDataSQLv1(1, 'SELECT top 1 * from wfh_request 
   left join user_emp_view on requestor_id=emp_id
   where request_token=?', array($token));
@@ -388,8 +401,9 @@ function createFormEmailRequestWFHNotify($token){
   foreach ($wfh as $request) {
     $Leadername="";
     $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
-
+    $Myname = "";
         foreach ($requestTo as $To) {
+            $Myname = $To['emp_fname']." ".$To['emp_lname'];
             $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($To['emp_welapproved']));
             foreach ($Leader as $Mgr) {
                 //ส่งEmailหาเมลตัวหน้างาน
@@ -408,10 +422,7 @@ function createFormEmailRequestWFHNotify($token){
             '.date('d/m/Y',strtotime($date['date_select'])).'
         </td>
         <td align="center" style=" font-size:14px; padding-bottom: 10px;">
-           Sun
-        </td>
-        <td align="center" style=" font-size:14px; padding-bottom: 10px;">
-            0
+        '.$thai_dayEN_arr[date('w',strtotime($date['date_select']))].'
         </td>
     </tr>';
     }
@@ -431,11 +442,11 @@ function createFormEmailRequestWFHNotify($token){
                   </tr>
                   <tr>
                       <td align="left" valign="top" style="font-size:14px;padding:0px 40px">
-                          <p style=""><b>Dear '.$Leadername.',</b><br><br>
+                          <p style=""><b>Dear '.$Myname.',</b><br><br>
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                              <b></b> มีการ Work From Home เมื่อ '.date('d/m/Y H:i',strtotime($request['request_create_at'])).' รายละเอียด ดังต่อไปนี้<br>
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <b>'.$Leadername.'</b> มีการมอบหมายให้ Work From Home เมื่อ '.date('d/m/Y H:i',strtotime($request['request_create_at'])).' รายละเอียด ดังต่อไปนี้<br>
+                              
                           </p>
                       </td>
                   </tr>
@@ -452,9 +463,7 @@ function createFormEmailRequestWFHNotify($token){
                                   <th style=" font-size:14px; padding-bottom: 10px;">
                                       วัน (Mon-Fri)
                                   </th>
-                                  <th style=" font-size:14px; padding-bottom: 10px;">
-                                      จำนวนคนที่ WFH วันนั้น
-                                  </th>
+                                 
                               </tr>
                               '.$htmlDate.'
                               

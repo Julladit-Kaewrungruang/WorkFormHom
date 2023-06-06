@@ -36,44 +36,12 @@
                 <tr class="text-center">
                     <th><input type="checkbox" name="foo" value="bar1" onClick="ClickAll1(this)" class="checkDate" id="btnCheckAll1"> All <br /></th>
                     <th>Detail</th>
-                    <th>#Req Number</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="tbody-Detail">
                 <tr class="text-center">
-                    <td><input type="checkbox" name="foo" value="bar1" class="checkDate"> </td>
-                    <td>2023-04-27</td>
-                    <td> <button type="submit" class="btn btn-success" style="border-radius: 15px;" id="approve-btn">Approve</button>
-                        <button type="submit" class="btn btn-danger" style="border-radius: 15px;" id="reject-btn">Reject</button>
-                    </td>
-                </tr>
-                <tr class="text-center">
-                    <td><input type="checkbox" name="foo" value="bar1"></td>
-                    <td>2023-04-27</td>
-                    <td> <button type="submit" class="btn btn-success" style="border-radius: 15px;" id="approve-btn">Approve</button>
-                        <button type="submit" class="btn btn-danger" style="border-radius: 15px;" id="reject-btn">Reject</button>
-                    </td>
-                </tr>
-                <tr class="text-center">
-                    <td><input type="checkbox" name="foo" value="bar1"></td>
-                    <td>2023-04-27</td>
-                    <td> <button type="submit" class="btn btn-success" style="border-radius: 15px;" id="approve-btn">Approve</button>
-                        <button type="submit" class="btn btn-danger" style="border-radius: 15px;" id="reject-btn">Reject</button>
-                    </td>
-                </tr>
-                <tr class="text-center">
-                    <td><input type="checkbox" name="foo" value="bar1"></td>
-                    <td>2023-04-27</td>
-                    <td> <button type="submit" class="btn btn-success" style="border-radius: 15px;" id="approve-btn">Approve</button>
-                        <button type="submit" class="btn btn-danger" style="border-radius: 15px;" id="reject-btn">Reject</button>
-                    </td>
-                </tr>
-                <tr class="text-center">
-                    <td><input type="checkbox" name="foo" value="bar1"></td>
-                    <td>2023-04-27</td>
-                    <td> <button type="submit" class="btn btn-success" style="border-radius: 15px;" id="approve-btn">Approve</button>
-                        <button type="submit" class="btn btn-danger" style="border-radius: 15px;" id="reject-btn">Reject</button>
-                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -85,9 +53,9 @@
 </div>
 
 
-<!-- <?php echo $token ; ?> -->
+<!-- <?php echo $token; ?> -->
 <script type="text/javascript">
     $(window).ready(() => {
-        getdataDetailReq('<?= $token ?>')  
+        getdataDetailReq('<?= $token ?>')
     });
 </script>

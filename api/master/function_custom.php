@@ -77,11 +77,20 @@ function getformrequest($type, $dataAPI, $dataoption)
         where date_status!=9
         ', array());
     } else if ($type == 'employeeRequest') {
-        $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
-        left join wfh_request on date_requestid=request_id
-        left join user_emp_view on todo_type=request_to
-        where date_status!=9
-        ', array());
+        // $search = '%'.$dataAPI['search'].'%';
+        // $start = $dataAPI['start'];
+        // $end = $dataAPI['end'];
+
+        // $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
+        // left join wfh_request on date_requestid=request_id
+        // left join user_emp_view on todo_type=request_to
+        // where date_status!=9 AND (request_create_at between ? AND ? )
+        // ', array($start,$end));
+         $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
+         left join wfh_request on date_requestid=request_id
+         left join user_emp_view on todo_type=request_to
+         where date_status!=9 
+         ', array());
     } else if ($type == 'ShowCalenderdate') {
         $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
         left join wfh_request on date_requestid=request_id
@@ -231,6 +240,8 @@ function GetWork($type, $dataAPI, $dataoption)
         $datareturn = getDataSQLv1(1, 'SELECT * from user_emp_view where emp_status=1 order by emp_fname asc', array());
     } else if ($type == 'MyTeam1') {
         $datareturn = getDataSQLv1(1, 'SELECT todo_type ,SUM(todo_owner) FROM wfh_todolist GROUP BY todo_type ', array());
+    } else if ($type == 'ShowPositionEmp') {
+        $datareturn = getDataSQLv1(1, 'SELECT MIN(emp_fname) AS emp_fname, division_name FROM user_emp_view WHERE emp_status = 1 GROUP BY division_name ORDER BY division_name ASC', array());
     }
     return setDataReturn($code, $datareturn);
 }
@@ -290,6 +301,12 @@ function searchDataTodoByEmp($empId, $type)
             left join wfh_todolist on for_todoid=todo_id
             where for_userid =? AND  for_status=1 AND todo_status=1 AND todo_type=?', array($empId, $type));
 }
+function searchDataWFHByEmpAndDate($empId, $date)
+{
+    return getDataSQLv1(1, 'SELECT * FROM wfh_requestDate 
+            left join wfh_request on request_id=date_requestid
+            where date_status=2 AND request_status=1 AND request_to=? AND date_select=?', array($empId,$date ));
+}
 
 function GetEmployeeRequest($type, $dataAPI, $dataoption)
 {
@@ -299,7 +316,23 @@ function GetEmployeeRequest($type, $dataAPI, $dataoption)
     $empId = $_SESSION['emp_id'];
     // $data = array();0
     if ($type == 'employeeRequest') {
-        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9", array());
+        $search = '%'.$dataAPI['search'].'%';
+        $start = $dataAPI['start'];
+        $end = $dataAPI['end'];
+        // $conditon = '';
+        $conditon = ' AND ( ';
+        $conditon .= " request_token like '".$search."' ";
+        $conditon .= " OR request_remark like '".$search."' ";
+        $conditon .= " OR emp_fname like '".$search."' ";
+        $conditon .= " OR emp_lname like '".$search."' ";
+        $conditon .= " OR emp_fname_th like '".$search."' ";
+        $conditon .= " OR emp_lname_th like '".$search."' ";
+        $conditon .= " OR emp_positionName like '".$search."' ";
+        $conditon .= ' ) ';
+
+
+
+        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND (request_create_at between ? AND ? ) ".$conditon, array($start,$end));
         foreach ($dataEmp as $form) {
             $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
             $form['date'] = $datadate;

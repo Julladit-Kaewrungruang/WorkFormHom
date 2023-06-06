@@ -66,7 +66,6 @@ function showNameEmp() {
 }
 
 
-
 function requestform() {
   Swal.fire({
     // icon: "warning",
@@ -112,7 +111,11 @@ function requestform() {
 
 
 function getdataEmpRequest() {
+
   let dataAPI = {
+    search: byId(`inputSearch`).value,
+    start: moment(SELECT_FILTER__START_DAY).format('YYYY-MM-DD HH:mm'),
+    end: moment(SELECT_FILTER__END_DAY).format('YYYY-MM-DD HH:mm'),
   }
   console.log(dataAPI)
   connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
@@ -252,7 +255,7 @@ function getdataDetailReq2(token) {
       <td class="text-center fw-semibold bg_result_A " style=" color: ${ArrayStutsBg[date.date_status]}; border-radius:100px; width: 150px" >
       ${ArrayStuts[date.date_status]}</td>
       <td>${date.date_status == 1 ? `
-      <button type="button" class="button-29" style="border-radius: 15px;" data-id="${date.date_id}"  onclick="CancelReqDate(1,4,this)">Cancel</button>` : ``}</td>
+      <button type="button" class="button-29" style="border-radius: 15px;" data-id="${date.date_id}"  onclick="CancelReqDate(1,4,this)">Cancel </button>` : ``}</td>
       </tr>`
         })
         if (contApprove == 0) {
@@ -470,17 +473,17 @@ function getemployeePostion() {
   let dataAPI = {
   }
   console.log(dataAPI)
-  connectApi('get/work', { type: 'AllEmp', data: dataAPI, dataoption: 0 }, ``, function (output) {
+  connectApi('get/work', { type: 'ShowPositionEmp', data: dataAPI, dataoption: 0 }, ``, function (output) {
     console.log(output)
     if (output.status == 200) {
       let PositionEmp = ''
       let body = byId('SeletePostion')
       PositionEmp.innerHTML = '';
       output.data.forEach(Emp => {
-        PositionEmp += ` <option value="${Emp.orgunit_name}">${Emp.orgunit_name}</option>`;
+        PositionEmp += ` <option value="${Emp.division_name}">${Emp.division_name}</option>`;
       })
       body.innerHTML = `    
-        <label for="state" class="form-label text-start" >State</label>
+        <label for="state" class="form-label text-start" >Section</label>
         <select class="form-select" id="state" required>
           ${PositionEmp}
           </select>`
@@ -663,7 +666,8 @@ function createBoxFilterDate() {
     SELECT_FILTER__START_DAY = start
     SELECT_FILTER__END_DAY = end
     // console.log(1)
-    getdataTestTeam();
+    // getdataTestTeam();
+    getdataEmpRequest();
   });
 }
 
@@ -721,6 +725,10 @@ function getdataHistoryRequest() {
 }
 
 function GetApproveBtn(SingleType, type, e) {
+  let path = window.location.href
+  path = path.replace('?action=Approve', '');
+  path = path.replace('?action=Reject', '');
+  console.log(path);
   Swal.fire({
     // icon: "warning",
     title: type == 2 ? `Approve?` : `Reject?`,
@@ -754,7 +762,12 @@ function GetApproveBtn(SingleType, type, e) {
             html: `<img src="https://i.gifer.com/Es0.gif" width="100%">`,
             icon: 'success',
           }).then((result) => {
-            location.reload();
+            // location.reload();
+            let path = window.location.href
+            path = path.replace('?action=Approve', '');
+            path = path.replace('?action=Reject', '');
+            // window.location=`${BASEPATH}HistoryRequest2/`;
+            window.location = path;;
           });
         }
       })
@@ -829,4 +842,27 @@ function getdataHistoryRequestEmp(token) {
       })
     }
   })
+}
+
+function getFilterEmployee() {
+  let show = byId(`SeletePostion`);
+  show.innerHTML = "";
+  let dataAPI = {
+    filterEmp: byId('state').value
+  }
+}
+
+
+function Special_Case(e) {
+  if (e.checked == true) {
+    checkSpecialCase = true;
+  } else {
+
+  }
+  byId(`inputselectDate_`).value = "";
+  $('#selected-dates').empty()
+  $('#inputselectDate_').val();
+
+  $('#inputselectDate_').datepicker('setDate', null)
+
 }
