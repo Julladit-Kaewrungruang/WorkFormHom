@@ -391,7 +391,7 @@ $count = 0;
 }
 
 function createFormEmailRequestWFHNotify($token){
-global $thai_dayEN_arr;
+    global $thai_dayEN_arr;
   $wfh = getDataSQLv1(1, 'SELECT top 1 * from wfh_request 
   left join user_emp_view on requestor_id=emp_id
   where request_token=?', array($token));
@@ -516,6 +516,145 @@ global $thai_dayEN_arr;
   </td>
   </tr>
   </table>
-</body>';
+    </body>';
+  }
+}
+
+function createFormEmailRequestWFHApproveNotify($token,$type,$date_,$remark){
+    global $thai_dayEN_arr;
+  $wfh = getDataSQLv1(1, 'SELECT top 1 * from wfh_request 
+  left join user_emp_view on requestor_id=emp_id
+  where request_token=?', array($token));
+  $arrStatus = array('','','Approve','Reject','Cancel');
+
+  $domain = $_SERVER['SERVER_NAME'];
+
+  foreach ($wfh as $request) {
+    $Leadername="";
+    $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
+    $Myname = "";
+        foreach ($requestTo as $To) {
+            $Myname = $To['emp_fname']." ".$To['emp_lname'];
+            $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($To['emp_welapproved']));
+            foreach ($Leader as $Mgr) {
+                //ส่งEmailหาเมลตัวหน้างาน
+                $Leadername = $Mgr['emp_fname'].' '.$Mgr['emp_lname'];
+            }
+        }
+
+    $htmlDate = '';
+    foreach( $date_  AS $key => $date){
+        $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_id=?", array($date));
+        foreach($datadate AS $dateR){
+             $htmlDate.='<tr>
+        <td align="center" style=" font-size:14px; padding-bottom: 10px;">
+            '.($key+1).'
+        </td>
+        <td align="center" style=" font-size:14px; padding-bottom: 10px;">
+            '.date('d/m/Y',strtotime($dateR['date_select'])).'
+        </td>
+        <td align="center" style=" font-size:14px; padding-bottom: 10px;">
+        '.$thai_dayEN_arr[date('w',strtotime($dateR['date_select']))].'
+        </td>
+    </tr>';
+        }
+       
+    }
+
+
+  return '<body style="background-color: #ffffff;">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+          <td align="center" bgcolor="#f1f1f1">
+
+              <table border="0" bgcolor="#ffffff" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                  <tr>
+                      <td align="center" valign="top" style="padding: 36px 0px 30px 0px;font-size:14px">
+                          <img src="https://survey.btm.co.th/include/img/logo_bt_midland.png" width="80px"><br>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td align="left" valign="top" style="font-size:14px;padding:0px 40px">
+                          <p style=""><b>Dear '.$Myname.',</b><br><br>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                              <b>'.$Leadername.'</b> <b style="color:blue">'.$arrStatus[$type].'</b> คำขอ Work From Home เลขที่ '.$request['request_token'].' แล้ว 
+                              
+                              รายละเอียด ดังต่อไปนี้<br>
+
+                              <b style="color:red">'.$remark.'</b>
+                              <br>
+                              
+                          </p>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <table table border="0" bgcolor="#ffffff" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;  text-align: center; padding-left: 50px;">
+                              <tr>
+                                  <th style=" font-size:14px; padding-bottom: 10px;">
+                                      ลำดับ
+                                  </th>
+                                  <th style=" font-size:14px; padding-bottom: 10px;">
+                                      วันที่ (D/M/Y)
+                                  </th>
+                                  <th style=" font-size:14px; padding-bottom: 10px;">
+                                      วัน (Mon-Fri)
+                                  </th>
+                                 
+                              </tr>
+                              '.$htmlDate.'
+                              
+                          </table>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td align="center" valign="top" style="font-size:14px;padding:0px 40px;display:block">
+                          <table>
+        
+                              <tr>
+                                  <td colspan="2" style="text-align:center">
+
+                                      <a href="http://'.$domain.'/EmployeeRequest2/'.$request['request_token'].'" style="text-decoration:none">
+                                          <p style="width: 100%;background: #d1d1d1;color: #ffffff;font-size: 15px;font-weight: bold;line-height: 110%;text-decoration: none;text-transform: none;padding: 10px;border-radius: 10px;max-width: 336px;margin: auto;margin-top: 8px;">
+                                              เข้าสู่ระบบเพื่อดูรายละเอียดคำขอนี้
+                                          </p>
+                                      </a>
+                                  </td>
+                              </tr>
+                      </td>
+                  </tr>
+              </table>
+
+          </td>
+
+      </tr>
+
+      <tr>
+          <td align="center" bgcolor="#9aaeba" style="padding:0px">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                  <tr>
+                      <td align="center" valign="top" style="font-size:14px">
+                          <img src="https://survey.btm.co.th/include/img/bg-bt-survey-bottom.png" width="100%"><br>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td align="center" bgcolor="#9aaeba" style="text-align: center;padding: 0px 24px;  font-size: 14px; line-height: 20px; color: #fff;">
+                          <p style="margin: 0;">
+                              <small><b>BT Midland Co.,Ltd.</b><br>90 On nut road Prawet Bangkok
+                                  10250</small><bR>
+                              <a href="https://www.bt-midland.com/privacy">Privacy policy</a>
+                          </p>
+                      </td>
+                  </tr>
+              </table>
+          </td>
+      </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+    </body>';
   }
 }

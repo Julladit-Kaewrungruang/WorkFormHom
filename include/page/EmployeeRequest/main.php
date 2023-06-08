@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" id="App-history">
     <div class="row">
         <div class="col-xl-10 d-flex">
             <div class="customInputFilterDate">
@@ -30,14 +30,17 @@
                             <th>No.Token</th>
                             <th>Name Request</th>
                             <th>position</th>
-                            <th>Request</th>
+                            <th>Approve</th>
+                            <th>Reject</th>
+                            <th>Cancel</th>
+                            <th>All Date</th>
                             <th>Approved in month</th>
 
                         </tr>
                     </thead>
                     <tbody id="tbody-emprequest">
                         <tr>
-                          
+
                         </tr>
                     </tbody>
 
@@ -107,8 +110,8 @@
 
 <script type="text/javascript">
     $(window).ready(() => {
-        createBoxFilterDate();
+        createBoxFilterDate(1);
         getdataEmpRequest()
-        
+
     });
 </script>

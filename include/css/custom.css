@@ -391,3 +391,6 @@ button {
     /* สีที่ต้องการสำหรับจุดเหตุการณ์ */
     display: inline-block;
 }
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
+    font-size: .7rem;
+}

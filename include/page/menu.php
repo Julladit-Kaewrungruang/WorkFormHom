@@ -49,11 +49,11 @@
             <i class="bi bi-person"></i>
             <span>Employee </span></a>
     </li>
-    <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>Myteam2">
+    <!-- <li class="nav-item menu-item aaa" data-menu="<?= BASEPATH ?>Myteam2">
         <a class="nav-link" href="<?= BASEPATH ?>Myteam2">
             <i class="bi bi-person-video3"></i>
             <span>Myteam </span></a>
-    </li>
+    </li> -->
 
     <hr class="sidebar-divider d-none d-md-block" />
 

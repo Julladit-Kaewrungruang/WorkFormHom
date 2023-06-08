@@ -68,9 +68,9 @@ function showNameEmp() {
 
 function requestform() {
   Swal.fire({
-    // icon: "warning",
+    icon: "warning",
     title: "Confirm?",
-    html: `<img src="https://i.gifer.com/4yjE.gif" width="100%">`,
+    // html: `<img src="https://i.gifer.com/4yjE.gif" width="100%">`,
     showCancelButton: true,
     confirmButtonText: 'ตกลง',
     cancelButtonText: 'ยกเลิก'
@@ -108,8 +108,6 @@ function requestform() {
   })
 }
 
-
-
 function getdataEmpRequest() {
 
   let dataAPI = {
@@ -118,20 +116,27 @@ function getdataEmpRequest() {
     end: moment(SELECT_FILTER__END_DAY).format('YYYY-MM-DD HH:mm'),
   }
   console.log(dataAPI)
-  connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
+  connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, `App-history`, function (output) {
     console.log(output)
     if (output.status == 200) {
       let body = byId('tbody-emprequest')
       body.innerHTML = '';
       output.data.employeeRequest1.forEach(request => {
         let date1 = request.date;
+        let dateApp = request.dateApprove;
+        let dateRej = request.dateReject;
+        let dateCan = request.dateCancel;
+        let dateAllStatus = request.dateAllstatus;
         // let date = convertDate(moment(request.date_select)/1000);
         body.innerHTML += `<tr class="align-items-center">
           <td>${moment(request.request_create_at).format('D MMM YY')} at ${moment(request.request_create_at).format('H:mm')}</td>
           <td>${request.request_token}</td>
           <td>${request.emp_fname} ${request.emp_lname}</td>
           <td>${request.emp_positionName}</td>
-          <td>${date1.length} Day</td>
+          <td>${dateApp.length}/${date1.length} Day</td>
+          <td>${dateRej.length}/${date1.length} Day</td>
+          <td>${dateCan.length}/${date1.length} Day</td>
+          <td>${dateAllStatus.length}/${date1.length} Day</td>
           <td > <button  class="button-29">
           <a href='EmployeeRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
            </td>
@@ -184,7 +189,7 @@ function getdataDetailReq(token) {
             <td> 
             ${date.date_status == 1 ? `<button type="submit" class="btn btn-success button-30" style="border-radius: 15px;" id="approve-btn" data-id="${date.date_id}" onclick="GetApproveBtn(1,2,this)">Approve</button>
             <button type="submit" class="btn btn-danger button-31" style="border-radius: 15px;" id="reject-btn" 
-            data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>` : date.date_status == 2 ? `<span class="text-success">Approved</span>` : `<span class="text-danger">Rejected</span>`}
+            data-id="${date.date_id}" onclick="GetApproveBtn(1,3,this)">Reject</button>` : date.date_status == 2 ? `<span class="text-success">Approved</span>` : date.date_status == 3 ? `<span class="text-danger">Rejected ${!!date.date_remark ? ` : ${date.date_remark}` : ``}</span>` : `<span class="text-danger">Cancel request ${!!date.date_remark ? ` : ${date.date_remark}` : ``}</span>`}
             </td>
           </tr>`
         })
@@ -255,7 +260,7 @@ function getdataDetailReq2(token) {
       <td class="text-center fw-semibold bg_result_A " style=" color: ${ArrayStutsBg[date.date_status]}; border-radius:100px; width: 150px" >
       ${ArrayStuts[date.date_status]}</td>
       <td>${date.date_status == 1 ? `
-      <button type="button" class="button-29" style="border-radius: 15px;" data-id="${date.date_id}"  onclick="CancelReqDate(1,4,this)">Cancel </button>` : ``}</td>
+      <button type="button" class="button-29" style="border-radius: 15px;" data-id="${date.date_id}"  onclick="CancelReqDate(1,4,this)">Cancel ${!!date.date_remark ? ` : ${date.date_remark}` : ``}</button>` : ``}</td>
       </tr>`
         })
         if (contApprove == 0) {
@@ -524,21 +529,16 @@ function getDataShowEmpReq() {
     if (output.status == 200) {
       let body = byId('ShowEmp')
       if (output.data.length > 0) {
-
-
-
         let option = '';
         output.data.forEach(emp => {
           // body.innerHTML += `<h6 class="mb-2 text-body-secondary">${todoList.todo_owner}</h6>`
           option += `<option value="${emp.emp_id}">${emp.emp_fname} ${emp.emp_lname} (${emp.emp_positionName})</option>`;
         })
-
         body.innerHTML = `<div>
           <label for="">To</label>
           <select class="form-select" id="emp_select_assignto">${option}</select>
         </div>
         `;
-
       } else {
         body.innerHTML = '';
       }
@@ -554,9 +554,6 @@ function checkbtnAssignTo(e) {
   let body = byId('ShowEmp')
   e.checked == true ? getDataShowEmpReq() : body.innerHTML = '';
 }
-
-
-
 
 function CreateToDo(name, who, aboutWork, type) {
   console.log(name, who, aboutWork, type);
@@ -633,7 +630,7 @@ function getdataTestTeam() {
   })
 }
 
-function createBoxFilterDate() {
+function createBoxFilterDate(type) {
   $(`#filterDate`).daterangepicker({
     opens: 'right',
     startDate: moment(SELECT_FILTER__START_DAY),
@@ -667,7 +664,12 @@ function createBoxFilterDate() {
     SELECT_FILTER__END_DAY = end
     // console.log(1)
     // getdataTestTeam();
-    getdataEmpRequest();
+    if (type == 1) {
+      getdataEmpRequest();
+    } else if (type == 2) {
+      getdataHistoryRequestEmp()
+    }
+
   });
 }
 
@@ -705,9 +707,10 @@ function createBoxFilterDateToDo() {
 
 function getdataHistoryRequest() {
   let dataAPI = {
+
   }
   console.log(dataAPI)
-  connectApi('get/formrequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
+  connectApi('get/formrequest', { type: 'HistoryEmployeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
     console.log(output)
     if (output.status == 200) {
       let body = byId('tbody-emprequest')
@@ -730,15 +733,55 @@ function GetApproveBtn(SingleType, type, e) {
   path = path.replace('?action=Reject', '');
   console.log(path);
   Swal.fire({
-    // icon: "warning",
+    icon: "warning",
     title: type == 2 ? `Approve?` : `Reject?`,
-    html: `<img src="https://i.gifer.com/LyZJ.gif" width="100%">`,
     showCancelButton: true,
     confirmButtonText: 'Confirm',
     confirmButtonColor: "#10b981",
-    cancelButtonText: 'Cancel'
+    cancelButtonText: 'Cancel',
+    input: type == 3 ? 'textarea' : ``,
+    inputLabel: 'ระบุเหตุผล',
+    inputPlaceholder: 'ระบุเหตุผล',
+    inputValidator: (value) => {
+      if (value && type == 3) {
+        let check = [];
+        if (SingleType == 0) {
+          let checkDateDetail = FindAll(`.checkDateDetail:checked`);
+          checkDateDetail.forEach(date => {
+            check.push(parseInt(date.value))
+          })
+        } else {
+          check.push(parseInt(e.dataset.id))
+          // check.push(parseInt(date.value))
+        }
+        console.log(check);
+        let dataAPI = {
+          type: type,
+          check: check,
+          remark: value,
+        }
+        connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, `App-request`, function (output) {
+          console.log(output)
+          if (output.status == 200) {
+            Swal.fire({
+              title: 'Success!',
+              icon: 'success',
+            }).then((result) => {
+              // location.reload();
+              let path = window.location.href
+              path = path.replace('?action=Approve', '');
+              path = path.replace('?action=Reject', '');
+              // window.location=`${BASEPATH}HistoryRequest2/`;
+              window.location = path;;
+            });
+          }
+        })
+      } else {
+        return 'โปรดระบุข้อมูลให้ครบถ้วน!'
+      }
+    }
   }).then((result) => {
-    if (result.isConfirmed) {
+    if (result.isConfirmed && type == 2) {
       let check = [];
       if (SingleType == 0) {
         let checkDateDetail = FindAll(`.checkDateDetail:checked`);
@@ -753,13 +796,13 @@ function GetApproveBtn(SingleType, type, e) {
       let dataAPI = {
         type: type,
         check: check,
+        remark: ""
       }
-      connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, ``, function (output) {
+      connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, `App-request`, function (output) {
         console.log(output)
         if (output.status == 200) {
           Swal.fire({
             title: 'Success!',
-            html: `<img src="https://i.gifer.com/Es0.gif" width="100%">`,
             icon: 'success',
           }).then((result) => {
             // location.reload();
@@ -778,50 +821,86 @@ function GetApproveBtn(SingleType, type, e) {
 function CancelReqDate(SingleType, type, e) {
   console.log(SingleType, type, e);
   Swal.fire({
-    // icon: "warning",
+    icon: "warning",
     title: `Cancel?`,
-    html: `<img src="https://cdn.vox-cdn.com/thumbor/SFU8wqXYsSS_C-6NgerZMePh4Po=/0x15:500x348/1400x1050/filters:focal(0x15:500x348):format(gif)/cdn.vox-cdn.com/uploads/chorus_image/image/36992002/tumblr_lmwsamrrxT1qagx30.0.0.gif" width="100%">`,
     showCancelButton: true,
     confirmButtonText: 'Confirm',
     confirmButtonColor: "#10b981",
-    cancelButtonText: 'Cancel'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      let check = [];
-      if (SingleType == 0) {
-        let checkDateDetail = FindAll(`.checkDateDetail:checked`);
-        checkDateDetail.forEach(date => {
-          check.push(parseInt(date.value))
+    cancelButtonText: 'Cancel',
+    input: 'textarea',
+    inputLabel: 'ระบุเหตุผล',
+    inputPlaceholder: 'ระบุเหตุผล',
+    inputValidator: (value) => {
+      if (value) {
+        let check = [];
+        if (SingleType == 0) {
+          let checkDateDetail = FindAll(`.checkDateDetail:checked`);
+          checkDateDetail.forEach(date => {
+            check.push(parseInt(date.value))
+          })
+        } else {
+          check.push(parseInt(e.dataset.id))
+        }
+        console.log(check);
+        let dataAPI = {
+          type: type,
+          check: check,
+          remark: value
+        }
+        connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, ``, function (output) {
+          console.log(output)
+          if (output.status == 200) {
+            Swal.fire({
+              title: 'Success!',
+              icon: 'success',
+            }).then((result) => {
+              location.reload();
+            });
+          }
         })
       } else {
-        check.push(parseInt(e.dataset.id))
+        return 'โปรดระบุข้อมูลให้ครบถ้วน!'
       }
-      console.log(check);
-      let dataAPI = {
-        type: type,
-        check: check,
-      }
-      connectApi('get/DetailRequest', { type: 'ApproveAll', data: dataAPI, dataoption: 0 }, ``, function (output) {
-        console.log(output)
-        if (output.status == 200) {
-          Swal.fire({
-            title: 'Success!',
-            icon: 'success',
-          }).then((result) => {
-            location.reload();
-          });
-        }
-      })
     }
   })
 }
 
-function getdataHistoryRequestEmp(token) {
+// function getdataHistoryRequestEmp(token) {
+//   let dataAPI = {
+//     token: token,
+//   }
+//   console.log(dataAPI)
+//   connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
+//     console.log(output)
+//     if (output.status == 200) {
+//       let body = byId('tbody-historyrequest')
+//       body.innerHTML = '';
+//       let ArrayStuts = ['', 'Request', 'Approve', 'Reject'];
+//       let ArrayStutsBg = ['', '#E0F183', '#07FAA5', '#F97866'];
+//       output.data.employeeRequest1.forEach(request => {
+//         let date1 = request.date;
+//         body.innerHTML += `<tr class="align-items-center">
+//         <td>${moment(request.request_create_at).format('D MMM YY')} at ${moment(request.request_create_at).format('H:mm')}</td>
+//         <td>${request.request_token}</td>
+//         <td>${request.emp_fname} ${request.emp_lname}</td>
+//         <td>${date1.length} Day</td>
+//         <td > <button  class="button-29">
+//         <a href='HistoryRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
+//          </td>
+//       </tr>`
+//       })
+//     }
+//   })
+// }
+
+function getdataHistoryRequestEmp() {
   let dataAPI = {
-    token: token,
+    search: byId(`inputSearch`).value,
+    start: moment(SELECT_FILTER__START_DAY).format('YYYY-MM-DD HH:mm'),
+    end: moment(SELECT_FILTER__END_DAY).format('YYYY-MM-DD HH:mm'),
   }
   console.log(dataAPI)
-  connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, ``, function (output) {
+  connectApi('get/EmployeeRequest', { type: 'employeeRequest', data: dataAPI, dataoption: 0 }, `App-history`, function (output) {
     console.log(output)
     if (output.status == 200) {
       let body = byId('tbody-historyrequest')
@@ -830,11 +909,18 @@ function getdataHistoryRequestEmp(token) {
       let ArrayStutsBg = ['', '#E0F183', '#07FAA5', '#F97866'];
       output.data.employeeRequest1.forEach(request => {
         let date1 = request.date;
+        let dateApp = request.dateApprove;
+        let dateRej = request.dateReject;
+        let dateCan = request.dateCancel;
+        let dateAllStatus = request.dateAllstatus;
         body.innerHTML += `<tr class="align-items-center">
         <td>${moment(request.request_create_at).format('D MMM YY')} at ${moment(request.request_create_at).format('H:mm')}</td>
         <td>${request.request_token}</td>
         <td>${request.emp_fname} ${request.emp_lname}</td>
-        <td>${date1.length} Day</td>
+        <td>${dateApp.length}/${date1.length} Day</td>
+        <td>${dateRej.length}/${date1.length} Day</td>
+        <td>${dateCan.length}/${date1.length} Day</td>
+        <td>${dateAllStatus.length}/${date1.length} Day</td>
         <td > <button  class="button-29">
         <a href='HistoryRequest2/${request.request_token}'style="color: #fff;"> Detail </a></button>
          </td>
@@ -844,6 +930,7 @@ function getdataHistoryRequestEmp(token) {
   })
 }
 
+
 function getFilterEmployee() {
   let show = byId(`SeletePostion`);
   show.innerHTML = "";
@@ -852,17 +939,14 @@ function getFilterEmployee() {
   }
 }
 
-
 function Special_Case(e) {
   if (e.checked == true) {
     checkSpecialCase = true;
   } else {
-
   }
   byId(`inputselectDate_`).value = "";
   $('#selected-dates').empty()
   $('#inputselectDate_').val();
-
   $('#inputselectDate_').datepicker('setDate', null)
 
 }

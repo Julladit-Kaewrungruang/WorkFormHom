@@ -1,5 +1,5 @@
 <!-- <link href="<?= BASEPATH ?>include/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"> -->
-<div class="container-fluid">
+<div class="container-fluid" id="App-history">
     <div class="row">
         <div class="col-xl-10 d-flex">
             <div class="customInputFilterDate">
@@ -10,7 +10,7 @@
             </div>
             <div class="customInputFilterDate ml-2">
                 <div class="input-group mb-2">
-                    <input type="text" id="inputSearch" placeholder="Search..." class="form-control" id="" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" id="inputSearch" onkeyup="getdataHistoryRequestEmp()" placeholder="Search..." class="form-control" id="" aria-label="Username" aria-describedby="basic-addon1">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
 
                 </div>
@@ -31,7 +31,10 @@
                         <th>Request Date</th>
                         <th>No.Token</th>
                         <th>Name Request</th>
-                        <th>Request</th>
+                        <th>Approve</th>
+                        <th>Reject</th>
+                        <th>Cancel</th>
+                        <th>All Date</th>
                         <th>Request</th>
                     </tr>
                 </thead>
@@ -46,7 +49,8 @@
 
 <script type="text/javascript">
     $(window).ready(() => {
+        createBoxFilterDate(2);
         getdataHistoryRequestEmp();
-        createBoxFilterDate();
+        
     });
 </script>

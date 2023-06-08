@@ -66,7 +66,6 @@
                     return false;
                 }
             }
-
             return true;
         }
     }).on('changeDate', function(e) {

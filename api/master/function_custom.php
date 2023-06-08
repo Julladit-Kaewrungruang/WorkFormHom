@@ -77,15 +77,6 @@ function getformrequest($type, $dataAPI, $dataoption)
         where date_status!=9
         ', array());
     } else if ($type == 'employeeRequest') {
-        // $search = '%'.$dataAPI['search'].'%';
-        // $start = $dataAPI['start'];
-        // $end = $dataAPI['end'];
-
-        // $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
-        // left join wfh_request on date_requestid=request_id
-        // left join user_emp_view on todo_type=request_to
-        // where date_status!=9 AND (request_create_at between ? AND ? )
-        // ', array($start,$end));
          $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
          left join wfh_request on date_requestid=request_id
          left join user_emp_view on todo_type=request_to
@@ -120,7 +111,7 @@ function sendEmailForApprove($token)
         foreach ($requestTo as $To) {
             $Leader = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($To['emp_welapproved']));
             foreach ($Leader as $Mgr) {
-                //ส่งEmailหาเมลตัวหน้างาน
+                //ส่งEmailหาหัวหน้างาน
                 // $MgrEmail = $Mgr['emp_email'];
                 // $MgrName = $Mgr['emp_fname'];
                 $MgrEmail = 'tangjuradit969@gmail.com';
@@ -166,6 +157,10 @@ function sendEmailWFHNotify($token)
     foreach ($wfh as $request) {
         $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
         foreach ($requestTo as $To) {
+
+            // $MgrEmail = $request['emp_email'];
+            // $MgrName = $request['emp_fname']." ".$request['emp_lname'];
+
             $MgrEmail = 'tangjuradit969@gmail.com';
             $MgrName = 'User Test';
             $dataAPITOServer8 = array(
@@ -329,9 +324,36 @@ function GetEmployeeRequest($type, $dataAPI, $dataoption)
         $conditon .= " OR emp_lname_th like '".$search."' ";
         $conditon .= " OR emp_positionName like '".$search."' ";
         $conditon .= ' ) ';
+        $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND (request_create_at between ? AND ? ) ".$conditon, array($start,$end));
+        foreach ($dataEmp as $form) {
+            $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
+            $datadateApprove = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status=2 AND date_requestid=?", array($form['request_id']));
+            $datadateReject = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status=3 AND date_requestid=?", array($form['request_id']));
+            $datadateCancel = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status=4 AND date_requestid=?", array($form['request_id']));
+            $datadateAllstatus = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status IN (2, 3, 4) AND date_requestid=?", array($form['request_id']));
+            
+            $form['date'] = $datadate;
+            $form['dateApprove'] = $datadateApprove;
+            $form['dateReject'] = $datadateReject;
+            $form['dateCancel'] = $datadateCancel;
+            $form['dateAllstatus'] = $datadateAllstatus;
 
-
-
+            array_push($datareturn['employeeRequest1'], $form);
+        }
+    }else if ($type == 'HistoryEmployeeRequest') {
+        $search = '%'.$dataAPI['search'].'%';
+        $start = $dataAPI['start'];
+        $end = $dataAPI['end'];
+        // $conditon = '';
+        $conditon = ' AND ( ';
+        $conditon .= " request_token like '".$search."' ";
+        $conditon .= " OR request_remark like '".$search."' ";
+        $conditon .= " OR emp_fname like '".$search."' ";
+        $conditon .= " OR emp_lname like '".$search."' ";
+        $conditon .= " OR emp_fname_th like '".$search."' ";
+        $conditon .= " OR emp_lname_th like '".$search."' ";
+        $conditon .= " OR emp_positionName like '".$search."' ";
+        $conditon .= ' ) ';
         $dataEmp = getDataSQLv1(1, "SELECT * from wfh_request left join user_emp_view on emp_id=request_to where request_status!=9 AND (request_create_at between ? AND ? ) ".$conditon, array($start,$end));
         foreach ($dataEmp as $form) {
             $datadate = getDataSQLv1(1, "SELECT * from wfh_requestDate where date_status!=9 AND date_requestid=?", array($form['request_id']));
@@ -392,9 +414,24 @@ function GetDetailRequest($type, $dataAPI, $dataoption)
             array_push($datareturn, $form);
         }
     } else if ($type == 'ApproveAll') {
+        // $Approved = getDataSQLv1(1, "SELECT * from wfh_requestDate 
+        //     left join wfh_request on date_requestid=request_id
+        //     left join user_emp_view on emp_id=request_to where  date_id=?", array());
+
+        $requestID = 0;
         foreach ($dataAPI['check'] as $date) {
-            updateSQL('wfh_requestDate', 'date_status=?', 'date_id=?', array($dataAPI['type'], $date));
+            $dataRequest = getDataSQLv1(1, "SELECT date_requestid from wfh_requestDate where date_id=?", array($date));
+            foreach($dataRequest AS $request){
+                $requestID = $request['date_requestid'];
+                 updateSQL('wfh_requestDate', 'date_status=?,date_remark=?', 'date_id=?', array($dataAPI['type'],$dataAPI['remark'], $date));
+            }
+
+           
         }
+        if($dataAPI['type']==2 || $dataAPI['type']==3){
+            sendEmailNotifyEmpOnApprove($requestID,$dataAPI['type'],$dataAPI['check'],$dataAPI['remark']);
+        }
+        
         array_push($datareturn, $dataAPI);
     } else if ($type == 'DetailHistoryEmp') {
         $datareturn = getDataSQLv1(1, 'SELECT * from wfh_requestDate  
@@ -404,4 +441,44 @@ function GetDetailRequest($type, $dataAPI, $dataoption)
         ', array());
     }
     return setDataReturn($codeReturn, $datareturn);
+}
+
+
+function sendEmailNotifyEmpOnApprove($id,$type,$date,$remark){
+    global $dateNow, $browser, $keyAPI;
+
+    $arrStatus = array('','','Approved','Rejected','Cancel');
+    $wfh = getDataSQLv1(1, 'SELECT top 1 * from wfh_request 
+    left join user_emp_view on requestor_id=emp_id
+    where request_id=?', array($id));
+    $d = array();
+    foreach ($wfh as $request) {
+        $token = $request['request_token'];
+        $requestTo = getDataSQLv1(1, 'SELECT top 1 * from user_emp_view  where emp_id=?', array($request['request_to']));
+        foreach ($requestTo as $To) {
+             // $MgrEmail = $request['emp_email'];
+            // $MgrName = $request['emp_fname']." ".$request['emp_lname'];
+
+            $MgrEmail = 'tangjuradit969@gmail.com';
+            $MgrName = 'User Test';
+            $dataAPITOServer8 = array(
+                'toMail' => base64_encode($MgrEmail),
+                'toName' => encrypt($keyAPI, base64_encode($MgrName)),
+                'from' => encrypt($keyAPI, base64_encode($request['emp_fname'] . ' ' . $request['emp_lname'])),
+                'subject' => encrypt($keyAPI, base64_encode($request['emp_fname'] . ' '.$arrStatus[$type].' #' . $token.' '.$remark)),
+                'html' => encrypt($keyAPI, base64_encode(createFormEmailRequestWFHApproveNotify($token,$type,$date,$remark)))
+            );
+            $dt = callAPISendMail($dataAPITOServer8);
+        }
+     
+        $request['to'] = $requestTo;
+        array_push($d, $request);
+    }
+    return $d;
+
+
+
+
+
+
 }
