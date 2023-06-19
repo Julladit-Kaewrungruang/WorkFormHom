@@ -69,8 +69,8 @@
 
 <script type="text/javascript">
     $(window).ready(() => {
-        createBoxFilterDate(1);
-        getdataEmpRequest()
+        createBoxFilterDate(4); 
+        getdataEmpRequestAll()
 
     });
 </script>

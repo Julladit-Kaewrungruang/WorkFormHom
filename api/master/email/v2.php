@@ -22,7 +22,6 @@
                         </td>
                     </tr>
                     <tr> 
-                        
                         <td>
                             <table table border="0" bgcolor="#ffffff" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;  text-align: center; padding-left: 50px;">
                                 <tr>

@@ -1798,6 +1798,6 @@ function deleteCookie(name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-let SELECT_FILTER__START_DAY = moment().startOf('Week');
-let SELECT_FILTER__END_DAY = moment().endOf('Week');
+let SELECT_FILTER__START_DAY = moment().startOf('Month');
+let SELECT_FILTER__END_DAY = moment().endOf('Month');
 

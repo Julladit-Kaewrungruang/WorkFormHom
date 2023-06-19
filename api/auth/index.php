@@ -115,12 +115,12 @@ function callApiFromBT_authLoginWithEmpCode($url,$type,$dataApi,$token){
   curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
   $data = '{"type":"'.$type.'","data":"'.$dataApi.'","token":"'.$token.'"}';
   curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+   curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
   $resp = curl_exec($curl);
-  $result = (array) json_decode($resp,true);
+  $result = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $resp);
+  $result = (array) json_decode($result,true);
   curl_close($curl);
   array_push($datareturn,$result);
   return $datareturn;
 }
-
-
- ?>

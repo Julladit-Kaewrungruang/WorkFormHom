@@ -1,5 +1,5 @@
 <!-- <link href="<?= BASEPATH ?>include/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"> -->
-<div class="container-fluid" id="App-history">
+<div class="container-fluid">
     <div class="row">
         <div class="col-xl-10 d-flex">
             <div class="customInputFilterDate">
@@ -21,29 +21,35 @@
 <div class="card shadow mb-4  cardCustom">
 
     <div class="card-header py-3 headerXX bg-body-secondary">
+        <div class="float-end"><button class="btn btn-success btn-sm" onclick="ExportFileExcel('ExcelHistoryEmployeeWFH','Excel HistoryEmployee WFH')">Export</button></div>
         <h6 class="m-0 font-weight-bold text-black ">History Request</h6>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table  text-black text-center" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Request Date</th>
-                        <th>No.Token</th>
-                        <th>Name Request</th>
-                        <th>Approve</th>
-                        <th>Reject</th>
-                        <th>Cancel</th>
-                        <th>All Date</th>
-                        <th>Request</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-historyrequest">
-                    <tr>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="card-body TableScroll" id="App-history">
+        <!-- <div class="table-responsive"> -->
+        <table class="table ui text-black text-center tableHistoryRequest" id="table-ExcelHistoryEmployeeWFH" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="text-">Request Date</th>
+                    <th rowspan="2">No.Token</th>
+                    <th rowspan="2">Type</th>
+                    <th rowspan="2">Name Request</th>
+                    <th colspan="4">Request / Approve(Day)</th>
+                    <th rowspan="2">Status</th>
+                    <th rowspan="2">Action</th>
+                </tr>
+                <tr>
+                    <th>Approve</th>
+                    <th>Reject</th>
+                    <th>Cancel</th>
+                    <th>All Date</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-historyrequest">
+                <tr>
+                </tr>
+            </tbody>
+        </table>
+        <!-- </div> -->
     </div>
 </div>
 
@@ -51,6 +57,5 @@
     $(window).ready(() => {
         createBoxFilterDate(2);
         getdataHistoryRequestEmp();
-        
     });
 </script>

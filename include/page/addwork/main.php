@@ -19,45 +19,9 @@
             <div class="card">
                 <div class="card-header text-start fw-semibold todo" style="background-color:#fda4af;">To Do</div>
                 <div class="card-body drop-zone" id="showtodo_todo" data-type="todo" style="background-color: #fecdd3;">
-                    <!-- <div class="card mb-2 task" draggable="true">
-                        <div class="card-body">
-                            <h5 class="card-title">Name Work ?</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">รับผิดชอบ ?</h6>
-                            <p class="card-text">About Work ?</p>
-                        </div>
-                    </div>
-                    <div class="card mb-2 task" draggable="true">
-                        <div class="card-body">
-                            <h5 class="card-title">Name Work ?</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">รับผิดชอบ ?</h6>
-                            <p class="card-text">About Work ?</p>
-                        </div>
-                    </div>
-                    <div class="card mb-2 task" draggable="true">
-                        <div class="card-body">
-                            <h5 class="card-title">Name Work ?</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">รับผิดชอบ ?</h6>
-                            <p class="card-text">About Work ?</p>
-                        </div>
-                    </div>
-                    <div class="card mb-2 task" draggable="true">
-                        <div class="card-body">
-                            <h5 class="card-title">Name Work ?</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">รับผิดชอบ ?</h6>
-                            <p class="card-text">About Work ?</p>
-                        </div>
-                    </div>
-                    <div class="card mb-2 task" draggable="true">
-                        <div class="card-body">
-                            <h5 class="card-title">Name Work ?</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">รับผิดชอบ ?</h6>
-                            <p class="card-text">About Work ?</p>
-                        </div>
-                    </div> -->
-
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-outline-secondary" onclick="openModalNewtask('todo')"><i class="bi bi-clipboard-plus"></i>Add Task</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="openModalNewtask('todo')"><i class="bi bi-clipboard-plus"></i> Add Task</button>
                 </div>
             </div>
         </div>
@@ -67,7 +31,7 @@
                 </div>
                 <div class="card-body drop-zone" id="showtodo_doing" data-type="doing" style="background-color: #c7d2fe;"></div>
                 <div class="card-footer">
-                    <button id="show-form-btn" type="button" class="btn btn-outline-secondary" onclick="openModalNewtask('doing')"><i class="bi bi-clipboard-plus"></i>Add Task</button>
+                    <button id="show-form-btn" type="button" class="btn btn-outline-secondary" onclick="openModalNewtask('doing')"><i class="bi bi-clipboard-plus"></i> Add Task</button>
                 </div>
             </div>
         </div>
@@ -77,7 +41,7 @@
                 <div class="card-body drop-zone" id="showtodo_done" data-type="done" style="background-color: #a7f3d0;">
                 </div>
                 <div class="card-footer">
-                    <button id="create-card-btn" type="button" class="btn btn-outline-secondary" onclick="openModalNewtask('done')"><i class="bi bi-clipboard-plus"></i>Add Task</button>
+                    <button id="create-card-btn" type="button" class="btn btn-outline-secondary" onclick="openModalNewtask('done')"><i class="bi bi-clipboard-plus"></i> Add Task</button>
                 </div>
             </div>
         </div>
@@ -138,31 +102,31 @@
         }
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            //         const name = byId('name').value;
-            //         // const who = byId('who___').value;
-            //         let who =0;
-            //         const aboutWork = byId('aboutWork').value;
-            //         let type = byId('taskType').value
-            //         const card = `
-            //     <div  class="card mb-2 task" draggable="true">
-            //         <div class="card-body">
-            //             <h5 class="card-title">${name}</h5>
-            //             <h6 class="card-subtitle mb-2 text-body-secondary">${who}</h6>
-            //             <p class="card-text">${aboutWork}</p>
-            //         </div>
-            //     </div>
-            //     <div class="card mb-2 task" draggable="true" data-token="${todoList.todo_token}">
-            //     <div class="card-body">
-            //         <h5 class="card-title">${name}</h5>
-            //         <h6 class="card-subtitle mb-2 text-body-secondary">-</h6>
-            //         <p class="card-text">${aboutWork}</p>
-            //     </div>
-            // </div>
-            // `;
+            const name = byId('name').value;
+            // const who = byId('who___').value;
+            let who = 0;
+            const aboutWork = byId('aboutWork').value;
+            let type = byId('taskType').value
+            const card = `
+                <div  class="card mb-2 task" draggable="true">
+                    <div class="card-body">
+                        <h5 class="card-title">${name}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">${who}</h6>
+                        <p class="card-text">${aboutWork}</p>
+                    </div>
+                </div>
+                <div class="card mb-2 task" draggable="true" data-token="${todoList.todo_token}">
+                <div class="card-body">
+                    <h5 class="card-title">${name}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">-</h6>
+                    <p class="card-text">${aboutWork}</p>
+                </div>
+            </div>
+            `;
 
-            // const cardContainer = byId(`showtodo_${type}`);
-            // cardContainer.insertAdjacentHTML('beforeend', card);
-            // form.reset();
+            const cardContainer = byId(`showtodo_${type}`);
+            cardContainer.insertAdjacentHTML('beforeend', card);
+            form.reset();
 
             myModal.hide();
 
@@ -222,7 +186,6 @@
         }
         MoveWork();
         createBoxFilterDateToDo()
-        
     </script>
 
     <script type="text/javascript">

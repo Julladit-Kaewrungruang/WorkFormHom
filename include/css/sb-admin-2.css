@@ -3310,12 +3310,12 @@ fieldset:disabled a.btn {
 
 .btn-link {
   font-weight: 400;
-  color: #4e73df;
+  color: #ffffff;
   text-decoration: none;
 }
 
 .btn-link:hover {
-  color: #224abe;
+  color: #ffffff;
   text-decoration: underline;
 }
 
@@ -7110,7 +7110,7 @@ button.bg-dark:focus {
 }
 
 .bg-white {
-  background-color: #fff !important;
+  /* background-color: #fff !important;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */
 }
 
 .bg-transparent {
@@ -11142,8 +11142,7 @@ a:focus {
 }
 
 .bg-gradient-dark {
-  background-color: #5a5c69;
-  background-image: linear-gradient(180deg, #5a5c69 10%, #373840 100%);
+
   background-size: cover;
 }
 
@@ -11950,7 +11949,7 @@ a:focus {
 }
 
 .sidebar-dark .nav-item.active .nav-link i {
-  color: #fff;
+  color: orange;
 }
 
 .sidebar-dark #sidebarToggle {

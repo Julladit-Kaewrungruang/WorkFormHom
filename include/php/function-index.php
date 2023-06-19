@@ -25,7 +25,7 @@ if(isset($_COOKIE['emp_email']) && isset($_COOKIE['emp_wfm_token'])){
   $_SESSION["emp_wfm_token"] = $_COOKIE['emp_wfm_token'];
 }
 
-// print_r($_SESSION);
+//  print_r($_SESSION);
 
   if(isset($_SESSION["emp_wfm_token"])){
     // echo $_SERVER['REQUEST_URI'];
@@ -43,6 +43,7 @@ if(isset($_COOKIE['emp_email']) && isset($_COOKIE['emp_wfm_token'])){
     echo '<script>window.location="../auth"</script>';
 
   }
+  
 }
 
 function checkloginMaster(){
@@ -107,7 +108,3 @@ function menu_open($url){
     }
     return $return;
 }
- 
-
-
-?>

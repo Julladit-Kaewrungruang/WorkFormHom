@@ -27,7 +27,7 @@ $datalogin = checklogin();
 include 'include/Steampixel/Route.php';
 date_default_timezone_set("Asia/Bangkok");
 define('BASEPATH', '/');
-
+ 
 
 
 // print_r($_SESSION);
@@ -122,7 +122,7 @@ define('BASEPATH', '/');
     <script type="text/javascript">
     $(window).ready(() => {
         // getdataHeadDetailReq()
-       
+        checkDesktop();
 
         setPathURL_T('<?= BASEPATH ?>')
       
@@ -148,63 +148,55 @@ define('BASEPATH', '/');
                 include_once('include/page/navbar.php');
 
                 Route::add('/', function () {
-                    include('include/page/home/main.php');
+                    // include('include/page/home/main.php');
+                    include('include/page/Request/main.php');
                 });
                 Route::add('/home', function () {
-                    include('include/page/home/main.php');
                     // include('include/page/home/main.php');
+                    include('include/page/Request/main.php');
                 });
                 Route::add('/home/todo', function () {
-                    include('include/page/home/main.php');
-                    // include('include/page/home/main.php');
+                    include('include/page/home/main.php');                    
                 });
 
 
                 Route::add('/addwork', function () {
                     include('include/page/addwork/main.php');
-                    // include('include/page/addwork/main.php');
                 });
 
                 Route::add('/Calendar', function () {
                     include('include/page/calendar/main.php');
-                    // include('include/page/Request/main.php');
                 });
 
                 Route::add('/RequestWFH', function () {
                     include('include/page/Request/main.php');
-
-                    // include('include/page/Request/main.php');
                 });
 
                 Route::add('/HistoryRequest', function () {
                     include('include/page/HistoryRequest/main.php');
-                    // include('include/page/home/main.php');
                 });
 
                 Route::add('/HistoryRequest2/(.*)', function ($token) {
                     include('include/page/HistoryRequest/main2.php');
-                    // include('include/page/home/main.php');
                 });
 
                 Route::add('/EmployeeRequest', function () {
                     include('include/page/EmployeeRequest/main.php');
-                    // include('include/page/home/main.php');
+                });
+                Route::add('/HistoryAll', function () {
+                    include('include/page/EmployeeRequest/mainAll.php');
                 });
                 Route::add('/Myteam', function () {
                     include('include/page/Myteam/main.php');
-                    // include('include/page/home/main.php');
                 });
                 Route::add('/EmployeeHr', function () {
                     include('include/page/Employee/main.php');
-                    // include('include/page/home/main.php');
                 });
                 Route::add('/Myteam2', function () {
                     include('include/page/Myteam/main2.php');
-                    // include('include/page/home/main.php');
                 });
                 Route::add('/Approve/(.*)', function ($token) {
                     include('include/page/EmployeeRequest/main2.php');
-                    // include('include/page/home/main.php');
                 });
 
                 // Route::add('/EmployeeRequest1/(.*)/(.*)', function ($action,$token) {
@@ -214,30 +206,26 @@ define('BASEPATH', '/');
                 // });
 
                 Route::add('/EmployeeRequest1/(.*)/(.*)', function($token,$customer) {
-                    // include_once("include/page/survey.php");
                     include('include/page/EmployeeRequest/main2.php');
                 });
 
                 Route::add('/EmployeeRequest2/(.*)', function ($token) {
                     $action1 = '';
                     include('include/page/EmployeeRequest/main2.php');
-                    // include('include/page/home/main.php');
                 });
-
-
+                Route::add('/HistoryAll2/(.*)', function ($token) {
+                    $action1 = '';
+                    include('include/page/EmployeeRequest/mainHistoryDetail.php');
+                });
                 Route::pathNotFound(function ($path) {
                     include('include/page/error404.php');
                 });
-
                 Route::methodNotAllowed(function ($path, $method) {
                     echo 'Error 405 :-(<br>';
                     echo 'The requested path "' . $path . '" exists. But the request method "' . $method . '" is not allowed on this path!';
                 });
-
                 Route::run(BASEPATH);
                 ?>
-
-
             </div>
         </div>
     </div>

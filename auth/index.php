@@ -23,7 +23,7 @@ if(isset($_SESSION["emp_wfm_token"])){
 // echo '<br>';
 // print_r($_COOKIE);
 // echo "<br>";
-// print_r($_SESSION);
+ print_r($_SESSION);
 
 
 

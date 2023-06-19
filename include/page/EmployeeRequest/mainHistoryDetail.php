@@ -36,7 +36,7 @@
             <table class="table ">
                 <thead>
                     <tr class="text-center">
-                        <th><input type="checkbox" name="foo" value="bar1" onClick="ClickAll1(this)" class="checkDate" id="btnCheckAll1"> All <br /></th>
+                        
                         <th>Day</th>
                         <th>Detail</th>
                         <th>Status</th>
@@ -59,6 +59,6 @@
 <!-- <?php echo $token; ?> -->
 <script type="text/javascript">
     $(window).ready(() => {
-        getdataDetailReq('<?= $token ?>')
+        getdataDetailReqAll('<?= $token ?>')
     });
 </script>
